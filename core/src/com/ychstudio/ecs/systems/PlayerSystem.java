@@ -56,6 +56,12 @@ public class PlayerSystem extends IteratingSystem {
             body.setLinearVelocity(tmpV);
         }
 
+        if (body.getLinearVelocity().len2() > 0.1f) {
+            state.setState(PlayerComponent.MOVE);
+        } else {
+            state.setState(PlayerComponent.IDLE);
+        }
+
     }
 
 }
