@@ -2,13 +2,12 @@ package com.ychstudio;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.ychstudio.gamesys.GameManager;
 import com.ychstudio.screens.PlayScreen;
-
-import gamesys.GameManager;
 
 public class TownKeeper extends Game {
 
-    SpriteBatch batch;
+    private SpriteBatch batch;
 
     public SpriteBatch getBatch() {
         return batch;

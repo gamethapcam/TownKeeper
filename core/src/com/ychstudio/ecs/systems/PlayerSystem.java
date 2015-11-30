@@ -21,40 +21,40 @@ public class PlayerSystem extends IteratingSystem {
     private final Vector2 tmpV = new Vector2();
 
     public PlayerSystem() {
-	super(Family.all(PlayerComponent.class, RigidBodyComponent.class, StateComponent.class).get());
+        super(Family.all(PlayerComponent.class, RigidBodyComponent.class, StateComponent.class).get());
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-	PlayerComponent player = playerM.get(entity);
-	RigidBodyComponent rigidBody = rigidBodyM.get(entity);
-	StateComponent state = stateM.get(entity);
+        PlayerComponent player = playerM.get(entity);
+        RigidBodyComponent rigidBody = rigidBodyM.get(entity);
+        StateComponent state = stateM.get(entity);
 
-	Body body = rigidBody.body;
+        Body body = rigidBody.body;
 
-	// Controls
-	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-	    body.applyLinearImpulse(tmpV.set(0, player.speed), body.getWorldCenter(), true);
-	}
+        // Controls
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            body.applyLinearImpulse(tmpV.set(0, player.speed), body.getWorldCenter(), true);
+        }
 
-	if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-	    body.applyLinearImpulse(tmpV.set(0, -player.speed), body.getWorldCenter(), true);
-	}
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            body.applyLinearImpulse(tmpV.set(0, -player.speed), body.getWorldCenter(), true);
+        }
 
-	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-	    body.applyLinearImpulse(tmpV.set(-player.speed, 0), body.getWorldCenter(), true);
-	}
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            body.applyLinearImpulse(tmpV.set(-player.speed, 0), body.getWorldCenter(), true);
+        }
 
-	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-	    body.applyLinearImpulse(tmpV.set(player.speed, 0), body.getWorldCenter(), true);
-	}
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            body.applyLinearImpulse(tmpV.set(player.speed, 0), body.getWorldCenter(), true);
+        }
 
-	// limit velocity
-	if (body.getLinearVelocity().len2() > player.maxSpeed * player.maxSpeed) {
-	    tmpV.set(body.getLinearVelocity());
-	    tmpV.nor();
-	    body.setLinearVelocity(tmpV);
-	}
+        // limit velocity
+        if (body.getLinearVelocity().len2() > player.maxSpeed * player.maxSpeed) {
+            tmpV.set(body.getLinearVelocity());
+            tmpV.nor();
+            body.setLinearVelocity(tmpV);
+        }
 
     }
 

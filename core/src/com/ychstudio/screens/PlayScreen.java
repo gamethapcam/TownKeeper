@@ -20,8 +20,7 @@ import com.ychstudio.ecs.systems.PhysicsSystem;
 import com.ychstudio.ecs.systems.PlayerSystem;
 import com.ychstudio.ecs.systems.RenderSystem;
 import com.ychstudio.ecs.systems.StateSystem;
-
-import gamesys.GameManager;
+import com.ychstudio.gamesys.GameManager;
 
 public class PlayScreen implements Screen {
 
@@ -41,66 +40,66 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
     public PlayScreen(TownKeeper game) {
-	this.game = game;
-	this.batch = game.getBatch();
+        this.game = game;
+        this.batch = game.getBatch();
     }
 
     @Override
     public void show() {
 
-	camera = new OrthographicCamera();
-	viewport = new FitViewport(12f, 9f, camera);
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(12f, 9f, camera);
 
-	world = new World(new Vector2(), true);
-	engine = new Engine();
+        world = new World(new Vector2(), true);
+        engine = new Engine();
 
-	engine.addSystem(new PlayerSystem());
-	engine.addSystem(new PhysicsSystem());
-	engine.addSystem(new StateSystem());
-	engine.addSystem(new AnimationSystem());
-	engine.addSystem(new RenderSystem(batch));
+        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new PhysicsSystem());
+        engine.addSystem(new StateSystem());
+        engine.addSystem(new AnimationSystem());
+        engine.addSystem(new RenderSystem(batch));
 
-	box2dDebugRenderer = new Box2DDebugRenderer();
-	showBox2DDebugRenderer = true;
+        box2dDebugRenderer = new Box2DDebugRenderer();
+        showBox2DDebugRenderer = true;
 
-	WorldBuilder worldBuilder = WorldBuilder.getInstance(world, engine);
-	tiledMap = worldBuilder.loadTiledMap("map1.tmx");
-	tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / GameManager.PPM, batch);
+        WorldBuilder worldBuilder = WorldBuilder.getInstance(world, engine);
+        tiledMap = worldBuilder.loadTiledMap("map1.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / GameManager.PPM, batch);
 
-	camera.translate(GameManager.playerPos);
+        camera.translate(GameManager.playerPos);
 
     }
 
     @Override
     public void render(float delta) {
-	handleInput();
+        handleInput();
 
-	Gdx.gl.glClearColor(0f, 0f, 0f, 1.0f);
-	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	batch.setProjectionMatrix(camera.combined);
-	tiledMapRenderer.setView(camera);
-	tiledMapRenderer.render();
+        batch.setProjectionMatrix(camera.combined);
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
 
-	world.step(Math.min(delta, 1 / 60f), 8, 3);
-	engine.update(delta);
+        world.step(Math.min(delta, 1 / 60f), 8, 3);
+        engine.update(delta);
 
-	if (showBox2DDebugRenderer) {
-	    box2dDebugRenderer.render(world, camera.combined);
-	}
+        if (showBox2DDebugRenderer) {
+            box2dDebugRenderer.render(world, camera.combined);
+        }
     }
 
     private void handleInput() {
 
-	if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-	    showBox2DDebugRenderer = !showBox2DDebugRenderer;
-	}
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            showBox2DDebugRenderer = !showBox2DDebugRenderer;
+        }
 
     }
 
     @Override
     public void resize(int width, int height) {
-	viewport.update(width, height);
+        viewport.update(width, height);
     }
 
     @Override
@@ -113,14 +112,14 @@ public class PlayScreen implements Screen {
 
     @Override
     public void hide() {
-	dispose();
+        dispose();
     }
 
     @Override
     public void dispose() {
-	world.dispose();
-	tiledMapRenderer.dispose();
-	box2dDebugRenderer.dispose();
+        world.dispose();
+        tiledMapRenderer.dispose();
+        box2dDebugRenderer.dispose();
     }
 
 }

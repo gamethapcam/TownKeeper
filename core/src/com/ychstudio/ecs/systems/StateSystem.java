@@ -8,18 +8,18 @@ import com.ychstudio.ecs.components.StateComponent;
 
 public class StateSystem extends IteratingSystem {
 
-	protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
-	
-	public StateSystem() {
-		super(Family.all(StateComponent.class).get());
-	}
+    protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
 
-	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
-		StateComponent state = stateM.get(entity);
-		
-		state.addStateTime(deltaTime);
-		
-	}
+    public StateSystem() {
+        super(Family.all(StateComponent.class).get());
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        StateComponent state = stateM.get(entity);
+
+        state.addStateTime(deltaTime);
+
+    }
 
 }

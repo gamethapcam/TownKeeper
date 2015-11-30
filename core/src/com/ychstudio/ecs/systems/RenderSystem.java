@@ -16,25 +16,25 @@ public class RenderSystem extends IteratingSystem {
     private SpriteBatch batch;
 
     public RenderSystem(SpriteBatch batch) {
-	super(Family.all(TransformComponent.class, RendererComponent.class).get());
-	this.batch = batch;
+        super(Family.all(TransformComponent.class, RendererComponent.class).get());
+        this.batch = batch;
     }
 
     @Override
     public void update(float deltaTime) {
-	batch.begin();
-	super.update(deltaTime);
-	batch.end();
+        batch.begin();
+        super.update(deltaTime);
+        batch.end();
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-	TransformComponent transform = transformM.get(entity);
-	RendererComponent renderer = rendererM.get(entity);
-	renderer.sprite.setPosition(transform.x - renderer.getWidth() / 2, transform.y - renderer.getHeight() / 2);
-	renderer.sprite.setRotation(transform.rot);
-	renderer.sprite.setScale(transform.sclX, transform.sclY);
-	renderer.sprite.draw(batch);
+        TransformComponent transform = transformM.get(entity);
+        RendererComponent renderer = rendererM.get(entity);
+        renderer.sprite.setPosition(transform.x - renderer.getWidth() / 2, transform.y - renderer.getHeight() / 2);
+        renderer.sprite.setRotation(transform.rot);
+        renderer.sprite.setScale(transform.sclX, transform.sclY);
+        renderer.sprite.draw(batch);
     }
 
 }

@@ -10,20 +10,20 @@ import com.ychstudio.ecs.components.TransformComponent;
 
 public class PhysicsSystem extends IteratingSystem {
 
-	protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
-	protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
-	
-	public PhysicsSystem() {
-		super(Family.all(TransformComponent.class, RigidBodyComponent.class).get());
-	}
+    protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
+    protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
 
-	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
-		Body body = rigidBodyM.get(entity).body;
-		TransformComponent transform = transformM.get(entity);
+    public PhysicsSystem() {
+        super(Family.all(TransformComponent.class, RigidBodyComponent.class).get());
+    }
 
-		transform.setPos(body.getPosition());
-		transform.rot = body.getAngle();
-	}
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        Body body = rigidBodyM.get(entity).body;
+        TransformComponent transform = transformM.get(entity);
+
+        transform.setPos(body.getPosition());
+        transform.rot = body.getAngle();
+    }
 
 }

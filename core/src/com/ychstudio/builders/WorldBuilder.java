@@ -9,8 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-
-import gamesys.GameManager;
+import com.ychstudio.gamesys.GameManager;
 
 public class WorldBuilder {
 
@@ -25,48 +24,48 @@ public class WorldBuilder {
     }
 
     public static WorldBuilder getInstance(World world, Engine engine) {
-	instance.world = world;
-	instance.engine = engine;
-	return instance;
+        instance.world = world;
+        instance.engine = engine;
+        return instance;
     }
 
     public TiledMap loadTiledMap(String mapFile) {
-	tiledMap = GameManager.assetManager.get("maps/" + mapFile, TiledMap.class);
-	ActorBuilder actorBuilder = ActorBuilder.getInstance(world, engine);
+        tiledMap = GameManager.assetManager.get("maps/" + mapFile, TiledMap.class);
+        ActorBuilder actorBuilder = ActorBuilder.getInstance(world, engine);
 
-	MapLayers mapLayers = tiledMap.getLayers();
+        MapLayers mapLayers = tiledMap.getLayers();
 
-	// TODO: load static objects
+        // TODO: load static objects
 
-	// TODO: load buildings
+        // TODO: load buildings
 
-	// TODO: load animals
+        // TODO: load animals
 
-	// TODO: load enemies
+        // TODO: load enemies
 
-	// TODO: load player
+        // TODO: load player
 
-	MapLayer playerLayer = mapLayers.get("Player");
-	MapObjects playerObjects = playerLayer.getObjects();
-	Rectangle rectangle = ((RectangleMapObject) (playerObjects.get(0))).getRectangle();
+        MapLayer playerLayer = mapLayers.get("Player");
+        MapObjects playerObjects = playerLayer.getObjects();
+        Rectangle rectangle = ((RectangleMapObject) (playerObjects.get(0))).getRectangle();
 
-	correctRectangle(rectangle);
+        correctRectangle(rectangle);
 
-	actorBuilder.createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-	GameManager.playerPos = new Vector2(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        actorBuilder.createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        GameManager.playerPos = new Vector2(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
 
-	return tiledMap;
+        return tiledMap;
     }
 
     private void correctRectangle(Rectangle rectangle) {
-	rectangle.x /= GameManager.PPM;
-	rectangle.y /= GameManager.PPM;
-	rectangle.width /= GameManager.PPM;
-	rectangle.height /= GameManager.PPM;
+        rectangle.x /= GameManager.PPM;
+        rectangle.y /= GameManager.PPM;
+        rectangle.width /= GameManager.PPM;
+        rectangle.height /= GameManager.PPM;
     }
 
     public TiledMap geTiledMap() {
-	return tiledMap;
+        return tiledMap;
     }
 
 }

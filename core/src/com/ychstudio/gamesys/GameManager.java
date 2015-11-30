@@ -1,4 +1,4 @@
-package gamesys;
+package com.ychstudio.gamesys;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -22,18 +22,18 @@ public class GameManager implements Disposable {
     public static Vector2 playerPos = Vector2.Zero;
 
     private GameManager() {
-	assetManager = new AssetManager();
+        assetManager = new AssetManager();
 
-	assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-	assetManager.load("maps/map1.tmx", TiledMap.class);
+        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        assetManager.load("maps/map1.tmx", TiledMap.class);
 
-	assetManager.load("img/actors.pack", TextureAtlas.class);
-	assetManager.finishLoading();
+        assetManager.load("img/actors.pack", TextureAtlas.class);
+        assetManager.finishLoading();
     }
 
     @Override
     public void dispose() {
-	assetManager.dispose();
+        assetManager.dispose();
     }
 
 }
