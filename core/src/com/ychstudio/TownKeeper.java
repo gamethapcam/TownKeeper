@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ychstudio.screens.PlayScreen;
 
+import gamesys.GameManager;
+
 public class TownKeeper extends Game {
 
     SpriteBatch batch;
@@ -32,5 +34,7 @@ public class TownKeeper extends Game {
     public void dispose() {
         super.dispose();
         batch.dispose();
+        GameManager.assetManager.dispose();
+
     }
 }

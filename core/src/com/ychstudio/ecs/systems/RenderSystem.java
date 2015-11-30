@@ -5,35 +5,36 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ychstudio.ecs.components.Renderer;
-import com.ychstudio.ecs.components.Transform;
+import com.ychstudio.ecs.components.RendererComponent;
+import com.ychstudio.ecs.components.TransformComponent;
 
 public class RenderSystem extends IteratingSystem {
 
-	protected ComponentMapper<Transform> transformM = ComponentMapper.getFor(Transform.class);
-	protected ComponentMapper<Renderer> rendererM = ComponentMapper.getFor(Renderer.class);
+    protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
+    protected ComponentMapper<RendererComponent> rendererM = ComponentMapper.getFor(RendererComponent.class);
 
-	private SpriteBatch batch;
+    private SpriteBatch batch;
 
-	public RenderSystem(SpriteBatch batch) {
-		super(Family.all(Transform.class, Renderer.class).get());
-		this.batch = batch;
-	}
+    public RenderSystem(SpriteBatch batch) {
+	super(Family.all(TransformComponent.class, RendererComponent.class).get());
+	this.batch = batch;
+    }
 
-	@Override
-	public void update(float deltaTime) {
-		batch.begin();
-		super.update(deltaTime);
-		batch.end();
-	}
+    @Override
+    public void update(float deltaTime) {
+	batch.begin();
+	super.update(deltaTime);
+	batch.end();
+    }
 
-	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
-		Transform transform = transformM.get(entity);
-		Renderer renderer = rendererM.get(entity);
-		
-		batch.draw(renderer.textureRegion, transform.x, transform.y, transform.x + renderer.getWidth() / 2f, transform.y + renderer.getHeight() / 2f, renderer.getWidth(), renderer.getHeight(), transform.sclX, transform.sclY, transform.rot, false);
-
-	}
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+	TransformComponent transform = transformM.get(entity);
+	RendererComponent renderer = rendererM.get(entity);
+	renderer.sprite.setPosition(transform.x - renderer.getWidth() / 2, transform.y - renderer.getHeight() / 2);
+	renderer.sprite.setRotation(transform.rot);
+	renderer.sprite.setScale(transform.sclX, transform.sclY);
+	renderer.sprite.draw(batch);
+    }
 
 }

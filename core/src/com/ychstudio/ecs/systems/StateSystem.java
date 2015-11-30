@@ -4,19 +4,19 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.ychstudio.ecs.components.State;
+import com.ychstudio.ecs.components.StateComponent;
 
 public class StateSystem extends IteratingSystem {
 
-	protected ComponentMapper<State> stateM = ComponentMapper.getFor(State.class);
+	protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
 	
 	public StateSystem() {
-		super(Family.all(State.class).get());
+		super(Family.all(StateComponent.class).get());
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		State state = stateM.get(entity);
+		StateComponent state = stateM.get(entity);
 		
 		state.addStateTime(deltaTime);
 		
