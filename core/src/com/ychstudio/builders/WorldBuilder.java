@@ -3,11 +3,19 @@ package com.ychstudio.builders;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ychstudio.gamesys.GameManager;
 
@@ -44,7 +52,57 @@ public class WorldBuilder {
 
         GameManager.playerMoveBound.set(0, 0, groundLayer.getWidth(), groundLayer.getHeight());
 
-        // TODO: load static objects
+        // load obstacles
+        MapLayer obstacleLayer = mapLayers.get("Obstacles");
+        for (MapObject mapObject : obstacleLayer.getObjects()) {
+            PolygonShape polygonShape = new PolygonShape();
+            if (mapObject instanceof RectangleMapObject) {
+                Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+                correctRectangle(rectangle);
+
+                BodyDef bodyDef = new BodyDef();
+                bodyDef.type = BodyType.StaticBody;
+                bodyDef.position.set(rectangle.x + rectangle.width / 2f, rectangle.y + rectangle.height / 2f);
+
+                Body body = world.createBody(bodyDef);
+
+                polygonShape = new PolygonShape();
+                polygonShape.setAsBox(rectangle.width / 2f, rectangle.height / 2f);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = polygonShape;
+                fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
+                fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
+
+                body.createFixture(fixtureDef);
+
+            } else if (mapObject instanceof PolygonMapObject) {
+                Polygon polygon = ((PolygonMapObject) mapObject).getPolygon();
+                float[] vertices = polygon.getVertices();
+
+                for (int i = 0; i < vertices.length; i++) {
+                    vertices[i] = vertices[i] / GameManager.PPM;
+                }
+
+                BodyDef bodyDef = new BodyDef();
+                bodyDef.type = BodyType.StaticBody;
+                bodyDef.position.set(polygon.getX() / GameManager.PPM, polygon.getY() / GameManager.PPM);
+
+                Body body = world.createBody(bodyDef);
+
+                polygonShape = new PolygonShape();
+                polygonShape.set(vertices);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = polygonShape;
+                fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
+                fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
+
+                body.createFixture(fixtureDef);
+
+            }
+            polygonShape.dispose();
+        }
 
         // TODO: load buildings
 
@@ -52,8 +110,7 @@ public class WorldBuilder {
 
         // TODO: load enemies
 
-        // TODO: load player
-
+        // load player
         MapLayer playerLayer = mapLayers.get("Player");
         MapObjects playerObjects = playerLayer.getObjects();
         Rectangle rectangle = ((RectangleMapObject) (playerObjects.get(0))).getRectangle();
