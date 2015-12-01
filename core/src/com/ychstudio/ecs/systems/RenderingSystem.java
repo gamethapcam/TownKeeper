@@ -1,22 +1,33 @@
 package com.ychstudio.ecs.systems;
 
+import java.util.Comparator;
+
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ychstudio.ecs.components.RendererComponent;
 import com.ychstudio.ecs.components.TransformComponent;
 
-public class RenderSystem extends IteratingSystem {
+public class RenderingSystem extends SortedIteratingSystem {
 
-    protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
+    protected static ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
     protected ComponentMapper<RendererComponent> rendererM = ComponentMapper.getFor(RendererComponent.class);
 
     private SpriteBatch batch;
 
-    public RenderSystem(SpriteBatch batch) {
-        super(Family.all(TransformComponent.class, RendererComponent.class).get());
+    public RenderingSystem(SpriteBatch batch) {
+        super(Family.all(TransformComponent.class, RendererComponent.class).get(), new Comparator<Entity>() {
+
+            @Override
+            public int compare(Entity e1, Entity e2) {
+                TransformComponent t1 = transformM.get(e1);
+                TransformComponent t2 = transformM.get(e2);
+
+                return (int) Math.signum(t2.zIndex - t1.zIndex);
+            }
+        });
         this.batch = batch;
     }
 

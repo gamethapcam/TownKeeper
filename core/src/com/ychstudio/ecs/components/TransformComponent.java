@@ -10,6 +10,8 @@ public class TransformComponent implements Component {
 
     public float sclX, sclY;
 
+    public float zIndex; // zIndex for rendering sequence
+
     public TransformComponent() {
         this(0, 0, 0);
     }
@@ -24,6 +26,8 @@ public class TransformComponent implements Component {
         this.rot = rot;
         this.sclX = sclX;
         this.sclY = sclY;
+
+        zIndex = 0;
     }
 
     public void setPos(float x, float y) {

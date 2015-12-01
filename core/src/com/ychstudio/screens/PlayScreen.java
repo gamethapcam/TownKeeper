@@ -20,7 +20,7 @@ import com.ychstudio.builders.WorldBuilder;
 import com.ychstudio.ecs.systems.AnimationSystem;
 import com.ychstudio.ecs.systems.PhysicsSystem;
 import com.ychstudio.ecs.systems.PlayerSystem;
-import com.ychstudio.ecs.systems.RenderSystem;
+import com.ychstudio.ecs.systems.RenderingSystem;
 import com.ychstudio.ecs.systems.StateSystem;
 import com.ychstudio.ecs.systems.TentSystem;
 import com.ychstudio.gamesys.GameManager;
@@ -66,7 +66,7 @@ public class PlayScreen implements Screen {
         engine.addSystem(new PhysicsSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());
-        engine.addSystem(new RenderSystem(batch));
+        engine.addSystem(new RenderingSystem(batch));
 
         box2dDebugRenderer = new Box2DDebugRenderer();
         showBox2DDebugRenderer = true;
