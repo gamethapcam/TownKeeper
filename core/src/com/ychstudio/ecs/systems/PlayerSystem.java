@@ -68,6 +68,22 @@ public class PlayerSystem extends IteratingSystem {
             state.setState(PlayerComponent.IDLE);
         }
 
+        // limit player's moving area
+        if (body.getPosition().x < GameManager.playerMoveBound.x + PlayerComponent.radius) {
+            body.setTransform(GameManager.playerMoveBound.x + PlayerComponent.radius, body.getPosition().y,
+                    body.getAngle());
+        } else if (body.getPosition().x > GameManager.playerMoveBound.width - PlayerComponent.radius) {
+            body.setTransform(GameManager.playerMoveBound.width - PlayerComponent.radius, body.getPosition().y,
+                    body.getAngle());
+        }
+        if (body.getPosition().y < GameManager.playerMoveBound.y + PlayerComponent.radius) {
+            body.setTransform(body.getPosition().x, GameManager.playerMoveBound.y + PlayerComponent.radius,
+                    body.getAngle());
+        } else if (body.getPosition().y > GameManager.playerMoveBound.height - PlayerComponent.radius) {
+            body.setTransform(body.getPosition().x, GameManager.playerMoveBound.height - PlayerComponent.radius,
+                    body.getAngle());
+        }
+
         // update player's location to GameManager for the camera to follow
         GameManager.playerCurrentPos.set(transform.x, transform.y);
     }

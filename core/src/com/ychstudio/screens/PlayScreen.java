@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -27,6 +28,9 @@ public class PlayScreen implements Screen {
 
     private final TownKeeper game;
     private final SpriteBatch batch;
+
+    private final float VIEW_WIDTH = 12f;
+    private final float VIEW_HEIGHT = 9f;
 
     private World world;
     private Engine engine;
@@ -51,7 +55,7 @@ public class PlayScreen implements Screen {
     public void show() {
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(12f, 9f, camera);
+        viewport = new FitViewport(VIEW_WIDTH, VIEW_HEIGHT, camera);
 
         world = new World(new Vector2(), true);
         engine = new Engine();
@@ -95,7 +99,12 @@ public class PlayScreen implements Screen {
     }
 
     private void updateCamera() {
-        camera.position.lerp(tmpVector3.set(GameManager.playerCurrentPos, 0), 0.1f);
+        float targetX = MathUtils.clamp(GameManager.playerCurrentPos.x, GameManager.playerMoveBound.x + VIEW_WIDTH / 2f,
+                GameManager.playerMoveBound.width - VIEW_WIDTH / 2f);
+        float targetY = MathUtils.clamp(GameManager.playerCurrentPos.y,
+                GameManager.playerMoveBound.y + VIEW_HEIGHT / 2f,
+                GameManager.playerMoveBound.height - VIEW_HEIGHT / 2f);
+        camera.position.lerp(tmpVector3.set(targetX, targetY, 0), 0.1f);
         camera.update();
     }
 

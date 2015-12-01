@@ -49,7 +49,7 @@ public class ActorBuilder {
         Body body = world.createBody(bodyDef);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(0.3f);
+        circleShape.setRadius(PlayerComponent.radius);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;

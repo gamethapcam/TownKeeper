@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ychstudio.gamesys.GameManager;
@@ -18,6 +19,9 @@ public class WorldBuilder {
     private Engine engine;
 
     private TiledMap tiledMap;
+
+    private float mapWidth = 0;
+    private float mapHeight = 0;
 
     private WorldBuilder() {
     }
@@ -33,6 +37,12 @@ public class WorldBuilder {
         ActorBuilder actorBuilder = ActorBuilder.getInstance(world, engine);
 
         MapLayers mapLayers = tiledMap.getLayers();
+
+        TiledMapTileLayer groundLayer = (TiledMapTileLayer) mapLayers.get("Ground");
+        mapWidth = groundLayer.getWidth();
+        mapHeight = groundLayer.getHeight();
+
+        GameManager.playerMoveBound.set(0, 0, groundLayer.getWidth(), groundLayer.getHeight());
 
         // TODO: load static objects
 
@@ -63,8 +73,16 @@ public class WorldBuilder {
         rectangle.height /= GameManager.PPM;
     }
 
-    public TiledMap geTiledMap() {
+    public TiledMap getTiledMap() {
         return tiledMap;
+    }
+
+    public float getMapWidth() {
+        return mapWidth;
+    }
+
+    public float getMapHeight() {
+        return mapHeight;
     }
 
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -21,6 +22,8 @@ public class GameManager implements Disposable {
 
     public static Vector2 playerSpawnPos = Vector2.Zero;
     public static Vector2 playerCurrentPos = Vector2.Zero;
+
+    public static Rectangle playerMoveBound = new Rectangle();
 
     private GameManager() {
         assetManager = new AssetManager();
