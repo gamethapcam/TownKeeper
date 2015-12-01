@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -39,6 +40,8 @@ public class PlayScreen implements Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
+    private final Vector3 tmpVector3 = Vector3.Zero;
+
     public PlayScreen(TownKeeper game) {
         this.game = game;
         this.batch = game.getBatch();
@@ -66,8 +69,7 @@ public class PlayScreen implements Screen {
         tiledMap = worldBuilder.loadTiledMap("map1.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / GameManager.PPM, batch);
 
-        camera.translate(GameManager.playerPos);
-
+        camera.position.set(tmpVector3.set(GameManager.playerCurrentPos, 0));
     }
 
     @Override
@@ -76,6 +78,9 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // update camera
+        updateCamera();
 
         batch.setProjectionMatrix(camera.combined);
         tiledMapRenderer.setView(camera);
@@ -87,6 +92,11 @@ public class PlayScreen implements Screen {
         if (showBox2DDebugRenderer) {
             box2dDebugRenderer.render(world, camera.combined);
         }
+    }
+
+    private void updateCamera() {
+        camera.position.lerp(tmpVector3.set(GameManager.playerCurrentPos, 0), 0.1f);
+        camera.update();
     }
 
     private void handleInput() {

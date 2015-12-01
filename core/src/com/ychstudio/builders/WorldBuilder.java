@@ -7,7 +7,6 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ychstudio.gamesys.GameManager;
 
@@ -52,7 +51,7 @@ public class WorldBuilder {
         correctRectangle(rectangle);
 
         actorBuilder.createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-        GameManager.playerPos = new Vector2(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        GameManager.playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
 
         return tiledMap;
     }

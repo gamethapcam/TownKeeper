@@ -73,10 +73,10 @@ public class ActorBuilder {
         keyFrames.clear();
 
         // MOVE
-        for (int i = 3; i < 8; i++) {
+        for (int i = 3; i < 7; i++) {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("citizen"), 32 * i, 0, 32, 32));
         }
-        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP);
         animationComponent.putAnimation(PlayerComponent.MOVE, animation);
 
         Entity entity = new Entity();

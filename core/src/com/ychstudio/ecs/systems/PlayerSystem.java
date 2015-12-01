@@ -11,17 +11,22 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
+import com.ychstudio.ecs.components.TransformComponent;
+import com.ychstudio.gamesys.GameManager;
 
 public class PlayerSystem extends IteratingSystem {
 
     protected ComponentMapper<PlayerComponent> playerM = ComponentMapper.getFor(PlayerComponent.class);
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
+    protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
 
     private final Vector2 tmpV = new Vector2();
 
     public PlayerSystem() {
-        super(Family.all(PlayerComponent.class, RigidBodyComponent.class, StateComponent.class).get());
+        super(Family
+                .all(PlayerComponent.class, RigidBodyComponent.class, StateComponent.class, TransformComponent.class)
+                .get());
     }
 
     @Override
@@ -29,23 +34,24 @@ public class PlayerSystem extends IteratingSystem {
         PlayerComponent player = playerM.get(entity);
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         StateComponent state = stateM.get(entity);
+        TransformComponent transform = transformM.get(entity);
 
         Body body = rigidBody.body;
 
         // Controls
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             body.applyLinearImpulse(tmpV.set(0, player.speed), body.getWorldCenter(), true);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             body.applyLinearImpulse(tmpV.set(0, -player.speed), body.getWorldCenter(), true);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             body.applyLinearImpulse(tmpV.set(-player.speed, 0), body.getWorldCenter(), true);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             body.applyLinearImpulse(tmpV.set(player.speed, 0), body.getWorldCenter(), true);
         }
 
@@ -62,6 +68,8 @@ public class PlayerSystem extends IteratingSystem {
             state.setState(PlayerComponent.IDLE);
         }
 
+        // update player's location to GameManager for the camera to follow
+        GameManager.playerCurrentPos.set(transform.x, transform.y);
     }
 
 }
