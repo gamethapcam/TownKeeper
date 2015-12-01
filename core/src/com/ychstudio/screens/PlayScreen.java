@@ -62,7 +62,7 @@ public class PlayScreen implements Screen {
         engine = new Engine();
 
         engine.addSystem(new PlayerSystem());
-        engine.addSystem(new TentSystem());
+        engine.addSystem(new TentSystem(world));
         engine.addSystem(new PhysicsSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());

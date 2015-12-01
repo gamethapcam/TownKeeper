@@ -22,6 +22,7 @@ import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
 import com.ychstudio.ecs.components.TentComponent;
 import com.ychstudio.ecs.components.TransformComponent;
+import com.ychstudio.ecs.components.VillagerComponent;
 import com.ychstudio.gamesys.GameManager;
 
 public class ActorBuilder {
@@ -59,9 +60,11 @@ public class ActorBuilder {
         fixtureDef.filter.maskBits = GameManager.WALL_BIT;
 
         body.createFixture(fixtureDef);
+        circleShape.dispose();
 
-        TextureAtlas textureAtlas = assetManager.get("img/actors.pack", TextureAtlas.class);
-        TextureRegion textureRegion = new TextureRegion(textureAtlas.findRegion("citizen"), 0, 0, 32, 32);
+        TextureRegion playerTextureRegion = assetManager.get("img/actors.pack", TextureAtlas.class)
+                .findRegion("Player");
+        TextureRegion textureRegion = new TextureRegion(playerTextureRegion, 32, 0, 32, 32);
 
         AnimationComponent animationComponent = new AnimationComponent();
         Animation animation;
@@ -75,10 +78,10 @@ public class ActorBuilder {
         keyFrames.clear();
 
         // MOVE
-        for (int i = 3; i < 7; i++) {
-            keyFrames.add(new TextureRegion(textureAtlas.findRegion("citizen"), 32 * i, 0, 32, 32));
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 0, 32, 32));
         }
-        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP);
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
         animationComponent.putAnimation(PlayerComponent.MOVE, animation);
 
         Entity entity = new Entity();
@@ -93,13 +96,65 @@ public class ActorBuilder {
 
         body.setUserData(entity);
 
-        circleShape.dispose();
     }
 
     public void createTent(float x, float y) {
         Entity entity = new Entity();
         entity.add(new TentComponent(new Vector2(x, y)));
         engine.addEntity(entity);
+    }
+
+    public void createVillager(TentComponent tent) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(tent.pos);
+        bodyDef.type = BodyType.DynamicBody;
+
+        Body body = world.createBody(bodyDef);
+
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(VillagerComponent.radius);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circleShape;
+        fixtureDef.filter.categoryBits = GameManager.PLAYER_BIT;
+        fixtureDef.filter.maskBits = GameManager.WALL_BIT;
+
+        body.createFixture(fixtureDef);
+        circleShape.dispose();
+
+        TextureRegion villagerTextureRegion = assetManager.get("img/actors.pack", TextureAtlas.class)
+                .findRegion("Villager");
+        TextureRegion textureRegion = new TextureRegion(villagerTextureRegion, 32, 0, 32, 32);
+
+        AnimationComponent animationComponent = new AnimationComponent();
+        Animation animation;
+
+        Array<TextureRegion> keyFrames = new Array<>();
+        // IDLE
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP);
+        animationComponent.putAnimation(VillagerComponent.IDLE, animation);
+
+        keyFrames.clear();
+        // WANDER
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(villagerTextureRegion, i * 32, 0, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(VillagerComponent.WANDER, animation);
+
+        Entity entity = new Entity();
+        entity.add(new VillagerComponent(5, tent));
+        entity.add(new RigidBodyComponent(body));
+        entity.add(new TransformComponent());
+        entity.add(new RendererComponent(textureRegion, 1f, 1f));
+        entity.add(new StateComponent(VillagerComponent.IDLE));
+        entity.add(animationComponent);
+
+        engine.addEntity(entity);
+
+        body.setUserData(entity);
+
     }
 
 }
