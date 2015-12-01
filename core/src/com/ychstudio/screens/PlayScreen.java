@@ -22,6 +22,7 @@ import com.ychstudio.ecs.systems.PhysicsSystem;
 import com.ychstudio.ecs.systems.PlayerSystem;
 import com.ychstudio.ecs.systems.RenderSystem;
 import com.ychstudio.ecs.systems.StateSystem;
+import com.ychstudio.ecs.systems.TentSystem;
 import com.ychstudio.gamesys.GameManager;
 
 public class PlayScreen implements Screen {
@@ -61,6 +62,7 @@ public class PlayScreen implements Screen {
         engine = new Engine();
 
         engine.addSystem(new PlayerSystem());
+        engine.addSystem(new TentSystem());
         engine.addSystem(new PhysicsSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());

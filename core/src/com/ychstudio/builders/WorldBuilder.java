@@ -54,54 +54,67 @@ public class WorldBuilder {
 
         // load obstacles
         MapLayer obstacleLayer = mapLayers.get("Obstacles");
-        for (MapObject mapObject : obstacleLayer.getObjects()) {
-            PolygonShape polygonShape = new PolygonShape();
-            if (mapObject instanceof RectangleMapObject) {
+        if (obstacleLayer != null) {
+            for (MapObject mapObject : obstacleLayer.getObjects()) {
+                PolygonShape polygonShape = new PolygonShape();
+                if (mapObject instanceof RectangleMapObject) {
+                    Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+                    correctRectangle(rectangle);
+
+                    BodyDef bodyDef = new BodyDef();
+                    bodyDef.type = BodyType.StaticBody;
+                    bodyDef.position.set(rectangle.x + rectangle.width / 2f, rectangle.y + rectangle.height / 2f);
+
+                    Body body = world.createBody(bodyDef);
+
+                    polygonShape = new PolygonShape();
+                    polygonShape.setAsBox(rectangle.width / 2f, rectangle.height / 2f);
+
+                    FixtureDef fixtureDef = new FixtureDef();
+                    fixtureDef.shape = polygonShape;
+                    fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
+                    fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
+
+                    body.createFixture(fixtureDef);
+
+                } else if (mapObject instanceof PolygonMapObject) {
+                    Polygon polygon = ((PolygonMapObject) mapObject).getPolygon();
+                    float[] vertices = polygon.getVertices();
+
+                    for (int i = 0; i < vertices.length; i++) {
+                        vertices[i] = vertices[i] / GameManager.PPM;
+                    }
+
+                    BodyDef bodyDef = new BodyDef();
+                    bodyDef.type = BodyType.StaticBody;
+                    bodyDef.position.set(polygon.getX() / GameManager.PPM, polygon.getY() / GameManager.PPM);
+
+                    Body body = world.createBody(bodyDef);
+
+                    polygonShape = new PolygonShape();
+                    polygonShape.set(vertices);
+
+                    FixtureDef fixtureDef = new FixtureDef();
+                    fixtureDef.shape = polygonShape;
+                    fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
+                    fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
+
+                    body.createFixture(fixtureDef);
+
+                }
+                polygonShape.dispose();
+            }
+        }
+
+        // load tents
+        MapLayer tentLayer = mapLayers.get("Tents");
+        if (tentLayer != null) {
+            for (MapObject mapObject : tentLayer.getObjects()) {
                 Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
                 correctRectangle(rectangle);
 
-                BodyDef bodyDef = new BodyDef();
-                bodyDef.type = BodyType.StaticBody;
-                bodyDef.position.set(rectangle.x + rectangle.width / 2f, rectangle.y + rectangle.height / 2f);
-
-                Body body = world.createBody(bodyDef);
-
-                polygonShape = new PolygonShape();
-                polygonShape.setAsBox(rectangle.width / 2f, rectangle.height / 2f);
-
-                FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.shape = polygonShape;
-                fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-                fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
-
-                body.createFixture(fixtureDef);
-
-            } else if (mapObject instanceof PolygonMapObject) {
-                Polygon polygon = ((PolygonMapObject) mapObject).getPolygon();
-                float[] vertices = polygon.getVertices();
-
-                for (int i = 0; i < vertices.length; i++) {
-                    vertices[i] = vertices[i] / GameManager.PPM;
-                }
-
-                BodyDef bodyDef = new BodyDef();
-                bodyDef.type = BodyType.StaticBody;
-                bodyDef.position.set(polygon.getX() / GameManager.PPM, polygon.getY() / GameManager.PPM);
-
-                Body body = world.createBody(bodyDef);
-
-                polygonShape = new PolygonShape();
-                polygonShape.set(vertices);
-
-                FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.shape = polygonShape;
-                fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-                fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
-
-                body.createFixture(fixtureDef);
-
+                actorBuilder.createTent(rectangle.x + rectangle.width / 2f, rectangle.y + rectangle.height / 2f);
             }
-            polygonShape.dispose();
         }
 
         // TODO: load buildings
@@ -112,13 +125,15 @@ public class WorldBuilder {
 
         // load player
         MapLayer playerLayer = mapLayers.get("Player");
-        MapObjects playerObjects = playerLayer.getObjects();
-        Rectangle rectangle = ((RectangleMapObject) (playerObjects.get(0))).getRectangle();
+        if (playerLayer != null) {
+            MapObjects playerObjects = playerLayer.getObjects();
+            Rectangle rectangle = ((RectangleMapObject) (playerObjects.get(0))).getRectangle();
 
-        correctRectangle(rectangle);
+            correctRectangle(rectangle);
 
-        actorBuilder.createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-        GameManager.playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+            actorBuilder.createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+            GameManager.playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        }
 
         return tiledMap;
     }

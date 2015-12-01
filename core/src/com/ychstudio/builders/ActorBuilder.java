@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -19,6 +20,7 @@ import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RendererComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
+import com.ychstudio.ecs.components.TentComponent;
 import com.ychstudio.ecs.components.TransformComponent;
 import com.ychstudio.gamesys.GameManager;
 
@@ -92,6 +94,12 @@ public class ActorBuilder {
         body.setUserData(entity);
 
         circleShape.dispose();
+    }
+
+    public void createTent(float x, float y) {
+        Entity entity = new Entity();
+        entity.add(new TentComponent(new Vector2(x, y)));
+        engine.addEntity(entity);
     }
 
 }
