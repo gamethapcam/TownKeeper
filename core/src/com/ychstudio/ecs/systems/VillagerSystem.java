@@ -7,10 +7,13 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
 import com.ychstudio.ecs.components.VillagerComponent;
+import com.ychstudio.gamesys.GameManager;
 
 public class VillagerSystem extends IteratingSystem {
 
@@ -19,7 +22,9 @@ public class VillagerSystem extends IteratingSystem {
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
 
-    private final Vector2 tmpV = new Vector2();
+    private final Vector2 tmpV1 = new Vector2();
+    private final Vector2 tmpV2 = new Vector2();
+    private boolean hitWall = false;
 
     public VillagerSystem() {
         super(Family.all(VillagerComponent.class, LifeComponent.class, RigidBodyComponent.class, StateComponent.class)
@@ -38,7 +43,8 @@ public class VillagerSystem extends IteratingSystem {
         if (villager.isRandomTimerUp()) {
             state.setState(chooseRandom(VillagerComponent.IDLE, VillagerComponent.WANDER));
             if (state.getState() == VillagerComponent.WANDER) {
-                villager.targetDir.set(MathUtils.randomTriangular(), MathUtils.randomTriangular());
+                // set a new target position
+                setNewTargetPos(villager, body.getPosition(), 6f);
             }
             villager.resetRandomTimer();
         }
@@ -50,17 +56,68 @@ public class VillagerSystem extends IteratingSystem {
                 break;
             case VillagerComponent.WANDER:
                 state.setState(VillagerComponent.WANDER);
-                body.applyLinearImpulse(tmpV.set(villager.targetDir).scl(villager.speed), body.getWorldCenter(), true);
+
+                body.applyLinearImpulse(tmpV1.set(villager.targetDir).scl(villager.speed), body.getWorldCenter(), true);
                 if (body.getLinearVelocity().len2() > villager.maxSpeed * villager.maxSpeed) {
-                    tmpV.set(body.getLinearVelocity());
-                    tmpV.setLength(villager.maxSpeed);
-                    body.setLinearVelocity(tmpV);
+                    tmpV1.set(body.getLinearVelocity());
+                    tmpV1.setLength(villager.maxSpeed);
+                    body.setLinearVelocity(tmpV1);
+                }
+
+                if (checkHitWall(villager, body)) {
+                    setNewTargetPos(villager, body.getPosition(), 6f);
                 }
                 break;
             default:
                 break;
         }
 
+    }
+
+    private boolean checkHitWall(VillagerComponent villager, Body body) {
+        hitWall = false;
+        RayCastCallback rayCastCallback = new RayCastCallback() {
+
+            @Override
+            public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+                if (fixture.getFilterData().categoryBits == GameManager.WALL_BIT) {
+                    hitWall = true;
+                }
+                return 0;
+            }
+        };
+
+        tmpV1.set(body.getPosition());
+        tmpV2.set(villager.targetDir).setLength(0.5f).add(tmpV1);
+
+        body.getWorld().rayCast(rayCastCallback, tmpV1, tmpV2);
+        if (hitWall) {
+            return true;
+        }
+
+        if (villager.targetDir.x != 0) {
+            tmpV2.set(villager.targetDir.x, 0).setLength(0.5f).add(tmpV1);
+            body.getWorld().rayCast(rayCastCallback, tmpV1, tmpV2);
+            if (hitWall) {
+                return hitWall;
+            }
+        }
+
+        if (villager.targetDir.y != 0) {
+            tmpV2.set(0, villager.targetDir.y).setLength(0.5f).add(tmpV1);
+            body.getWorld().rayCast(rayCastCallback, tmpV1, tmpV2);
+        }
+
+        return hitWall;
+    }
+
+    private void setNewTargetPos(VillagerComponent villager, Vector2 currentPos, float radius) {
+        float angle = MathUtils.random(360);
+
+        villager.targetPos.set(villager.tent.pos.x + MathUtils.sinDeg(angle) * radius,
+                villager.tent.pos.y + MathUtils.cosDeg(angle) * radius);
+
+        villager.targetDir.set(villager.targetPos.x - currentPos.x, villager.targetPos.y - currentPos.y);
     }
 
     protected int chooseRandom(int... choices) {
