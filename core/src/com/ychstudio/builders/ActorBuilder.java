@@ -44,6 +44,8 @@ public class ActorBuilder {
     }
 
     public void createPlayer(float x, float y) {
+        // update GameManager playerCurrentPos
+        GameManager.playerCurrentPos.set(x, y);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;

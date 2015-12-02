@@ -37,6 +37,8 @@ public class LifeComponent implements Component {
 
     public void takeDamage(int damage) {
         hp -= damage;
+        resetTimeToRecovery();
+        resetRecoveryCountDown();
     }
 
     public void recoverHp(int recovery) {

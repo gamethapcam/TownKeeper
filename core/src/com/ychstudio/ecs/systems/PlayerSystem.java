@@ -87,7 +87,7 @@ public class PlayerSystem extends IteratingSystem {
         }
 
         // update player's location to GameManager for the camera to follow
-        GameManager.playerCurrentPos.set(transform.x, transform.y);
+        GameManager.playerCurrentPos.set(body.getPosition().x, body.getPosition().y);
     }
 
 }

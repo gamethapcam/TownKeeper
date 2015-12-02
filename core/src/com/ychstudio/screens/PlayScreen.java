@@ -47,7 +47,7 @@ public class PlayScreen implements Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
-    private final Vector3 tmpVector3 = Vector3.Zero;
+    private final Vector3 tmpVector3 = new Vector3();
 
     public PlayScreen(TownKeeper game) {
         this.game = game;
@@ -79,7 +79,7 @@ public class PlayScreen implements Screen {
         tiledMap = worldBuilder.loadTiledMap("map1.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / GameManager.PPM, batch);
 
-        camera.position.set(tmpVector3.set(GameManager.playerCurrentPos, 0));
+        camera.position.set(new Vector3(GameManager.playerCurrentPos, 0));
     }
 
     @Override
