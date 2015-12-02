@@ -18,11 +18,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ychstudio.TownKeeper;
 import com.ychstudio.builders.WorldBuilder;
 import com.ychstudio.ecs.systems.AnimationSystem;
+import com.ychstudio.ecs.systems.LifeSystem;
 import com.ychstudio.ecs.systems.PhysicsSystem;
 import com.ychstudio.ecs.systems.PlayerSystem;
 import com.ychstudio.ecs.systems.RenderingSystem;
 import com.ychstudio.ecs.systems.StateSystem;
 import com.ychstudio.ecs.systems.TentSystem;
+import com.ychstudio.ecs.systems.VillagerSystem;
 import com.ychstudio.gamesys.GameManager;
 
 public class PlayScreen implements Screen {
@@ -30,8 +32,8 @@ public class PlayScreen implements Screen {
     private final TownKeeper game;
     private final SpriteBatch batch;
 
-    private final float VIEW_WIDTH = 12f;
-    private final float VIEW_HEIGHT = 9f;
+    private final float VIEW_WIDTH = 16f;
+    private final float VIEW_HEIGHT = 12f;
 
     private World world;
     private Engine engine;
@@ -62,6 +64,8 @@ public class PlayScreen implements Screen {
         engine = new Engine();
 
         engine.addSystem(new PlayerSystem());
+        engine.addSystem(new VillagerSystem());
+        engine.addSystem(new LifeSystem());
         engine.addSystem(new TentSystem(world));
         engine.addSystem(new PhysicsSystem());
         engine.addSystem(new StateSystem());

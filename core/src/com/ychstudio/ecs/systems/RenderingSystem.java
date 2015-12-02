@@ -33,6 +33,8 @@ public class RenderingSystem extends SortedIteratingSystem {
 
     @Override
     public void update(float deltaTime) {
+        forceSort(); // need forceSort, otherwise the sorting only happens when
+                     // the EntitySystem is updated
         batch.begin();
         super.update(deltaTime);
         batch.end();

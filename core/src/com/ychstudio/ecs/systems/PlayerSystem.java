@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
@@ -17,6 +18,7 @@ import com.ychstudio.gamesys.GameManager;
 public class PlayerSystem extends IteratingSystem {
 
     protected ComponentMapper<PlayerComponent> playerM = ComponentMapper.getFor(PlayerComponent.class);
+    protected ComponentMapper<LifeComponent> lifeM = ComponentMapper.getFor(LifeComponent.class);
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
     protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
@@ -24,14 +26,14 @@ public class PlayerSystem extends IteratingSystem {
     private final Vector2 tmpV = new Vector2();
 
     public PlayerSystem() {
-        super(Family
-                .all(PlayerComponent.class, RigidBodyComponent.class, StateComponent.class, TransformComponent.class)
-                .get());
+        super(Family.all(PlayerComponent.class, LifeComponent.class, RigidBodyComponent.class, StateComponent.class,
+                TransformComponent.class).get());
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent player = playerM.get(entity);
+        LifeComponent life = lifeM.get(entity);
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         StateComponent state = stateM.get(entity);
         TransformComponent transform = transformM.get(entity);

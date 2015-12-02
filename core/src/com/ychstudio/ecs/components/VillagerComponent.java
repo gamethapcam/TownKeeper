@@ -1,40 +1,46 @@
 package com.ychstudio.ecs.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class VillagerComponent implements Component {
 
-    public static int IDLE = 0;
-    public static int WANDER = 1;
-    public static int RECRUIT = 2;
-    public static int DIE = 3;
+    public static final int IDLE = 0;
+    public static final int WANDER = 1;
+    public static final int RECRUIT = 2;
+    public static final int DIE = 3;
 
     public static float radius = 0.48f;
 
-    private int maxHp;
-    private int hp;
     public TentComponent tent;
 
-    public VillagerComponent(int maxHp, TentComponent tent) {
-        this.maxHp = maxHp;
+    public float speed = 1f;
+    public float maxSpeed = 2f;
+
+    private float randomTimer;
+
+    public Vector2 targetPos;
+    public Vector2 targetDir;
+
+    public VillagerComponent(TentComponent tent) {
         this.tent = tent;
-        hp = maxHp;
+
+        randomTimer = MathUtils.random(1f, 5f);
+        targetPos = new Vector2(tent.pos);
+        targetDir = new Vector2();
     }
 
-    public boolean isDead() {
-        return hp <= 0;
+    public boolean isRandomTimerUp() {
+        return randomTimer <= 0;
     }
 
-    public boolean isFullHp() {
-        return hp == maxHp;
+    public void updateRandomTimer(float delta) {
+        randomTimer -= delta;
     }
 
-    public void takeDamage(int damage) {
-        hp -= damage;
-    }
-
-    public void recoverHp(int recovery) {
-        hp += recovery;
+    public void resetRandomTimer() {
+        randomTimer = MathUtils.random(1f, 5f);
     }
 
 }

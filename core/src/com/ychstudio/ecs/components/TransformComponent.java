@@ -11,6 +11,7 @@ public class TransformComponent implements Component {
     public float sclX, sclY;
 
     public float zIndex; // zIndex for rendering sequence
+    public boolean shouldUpdatezIndexByY; // if zIndex should be updated with y position
 
     public TransformComponent() {
         this(0, 0, 0);
@@ -28,6 +29,7 @@ public class TransformComponent implements Component {
         this.sclY = sclY;
 
         zIndex = 0;
+        shouldUpdatezIndexByY = true;
     }
 
     public void setPos(float x, float y) {

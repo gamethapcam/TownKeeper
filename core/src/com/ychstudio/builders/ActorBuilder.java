@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ychstudio.ecs.components.AnimationComponent;
+import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RendererComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
@@ -86,6 +87,7 @@ public class ActorBuilder {
 
         Entity entity = new Entity();
         entity.add(new PlayerComponent());
+        entity.add(new LifeComponent(20));
         entity.add(new TransformComponent());
         entity.add(new RigidBodyComponent(body));
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
@@ -106,8 +108,9 @@ public class ActorBuilder {
 
     public void createVillager(TentComponent tent) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(tent.pos);
         bodyDef.type = BodyType.DynamicBody;
+        bodyDef.position.set(tent.pos);
+        bodyDef.linearDamping = 6f;
 
         Body body = world.createBody(bodyDef);
 
@@ -144,8 +147,9 @@ public class ActorBuilder {
         animationComponent.putAnimation(VillagerComponent.WANDER, animation);
 
         Entity entity = new Entity();
-        entity.add(new VillagerComponent(5, tent));
+        entity.add(new VillagerComponent(tent));
         entity.add(new RigidBodyComponent(body));
+        entity.add(new LifeComponent(5));
         entity.add(new TransformComponent());
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
         entity.add(new StateComponent(VillagerComponent.IDLE));

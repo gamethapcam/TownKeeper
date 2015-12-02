@@ -25,7 +25,9 @@ public class PhysicsSystem extends IteratingSystem {
         transform.setPos(body.getPosition());
         transform.rot = body.getAngle();
 
-        transform.zIndex = transform.y;
+        if (transform.shouldUpdatezIndexByY) {
+            transform.zIndex = transform.y;
+        }
     }
 
 }

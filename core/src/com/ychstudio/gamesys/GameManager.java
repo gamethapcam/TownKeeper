@@ -20,8 +20,8 @@ public class GameManager implements Disposable {
     public static final float PPM = 32f;
     public static AssetManager assetManager;
 
-    public static Vector2 playerSpawnPos = Vector2.Zero;
-    public static Vector2 playerCurrentPos = Vector2.Zero;
+    public static Vector2 playerSpawnPos = new Vector2();
+    public static Vector2 playerCurrentPos = new Vector2();
 
     public static Rectangle playerMoveBound = new Rectangle();
 
