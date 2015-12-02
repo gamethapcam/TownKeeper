@@ -28,8 +28,8 @@ public class WorldBuilder {
 
     private TiledMap tiledMap;
 
-    private float mapWidth = 0;
-    private float mapHeight = 0;
+    private int mapWidth = 0;
+    private int mapHeight = 0;
 
     private WorldBuilder() {
     }
@@ -149,11 +149,11 @@ public class WorldBuilder {
         return tiledMap;
     }
 
-    public float getMapWidth() {
+    public int getMapWidth() {
         return mapWidth;
     }
 
-    public float getMapHeight() {
+    public int getMapHeight() {
         return mapHeight;
     }
 

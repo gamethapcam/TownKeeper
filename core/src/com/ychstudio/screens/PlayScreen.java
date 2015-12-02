@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ychstudio.TownKeeper;
+import com.ychstudio.ai.AStarPathFinding;
 import com.ychstudio.builders.WorldBuilder;
 import com.ychstudio.ecs.systems.AnimationSystem;
 import com.ychstudio.ecs.systems.LifeSystem;
@@ -78,6 +79,9 @@ public class PlayScreen implements Screen {
         WorldBuilder worldBuilder = WorldBuilder.getInstance(world, engine);
         tiledMap = worldBuilder.loadTiledMap("map1.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / GameManager.PPM, batch);
+
+        AStarPathFinding aStarPathFinding = AStarPathFinding.getInstance();
+        aStarPathFinding.init(world, worldBuilder.getMapWidth(), worldBuilder.getMapHeight());
 
         camera.position.set(new Vector3(GameManager.playerCurrentPos, 0));
     }
