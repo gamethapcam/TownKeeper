@@ -67,6 +67,22 @@ public class VillagerSystem extends IteratingSystem {
                 if (checkHitWall(villager, body)) {
                     setNewTargetPos(villager, body.getPosition(), 6f);
                 }
+
+                // limit villager's moving area
+                if (body.getPosition().x < GameManager.moveBound.x + VillagerComponent.radius) {
+                    body.setTransform(GameManager.moveBound.x + VillagerComponent.radius, body.getPosition().y,
+                            body.getAngle());
+                } else if (body.getPosition().x > GameManager.moveBound.width - VillagerComponent.radius) {
+                    body.setTransform(GameManager.moveBound.width - VillagerComponent.radius, body.getPosition().y,
+                            body.getAngle());
+                }
+                if (body.getPosition().y < GameManager.moveBound.y + VillagerComponent.radius) {
+                    body.setTransform(body.getPosition().x, GameManager.moveBound.y + VillagerComponent.radius,
+                            body.getAngle());
+                } else if (body.getPosition().y > GameManager.moveBound.height - VillagerComponent.radius) {
+                    body.setTransform(body.getPosition().x, GameManager.moveBound.height - VillagerComponent.radius,
+                            body.getAngle());
+                }
                 break;
             default:
                 break;

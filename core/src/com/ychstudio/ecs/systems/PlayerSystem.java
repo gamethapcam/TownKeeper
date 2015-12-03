@@ -71,18 +71,18 @@ public class PlayerSystem extends IteratingSystem {
         }
 
         // limit player's moving area
-        if (body.getPosition().x < GameManager.playerMoveBound.x + PlayerComponent.radius) {
-            body.setTransform(GameManager.playerMoveBound.x + PlayerComponent.radius, body.getPosition().y,
+        if (body.getPosition().x < GameManager.moveBound.x + PlayerComponent.radius) {
+            body.setTransform(GameManager.moveBound.x + PlayerComponent.radius, body.getPosition().y,
                     body.getAngle());
-        } else if (body.getPosition().x > GameManager.playerMoveBound.width - PlayerComponent.radius) {
-            body.setTransform(GameManager.playerMoveBound.width - PlayerComponent.radius, body.getPosition().y,
+        } else if (body.getPosition().x > GameManager.moveBound.width - PlayerComponent.radius) {
+            body.setTransform(GameManager.moveBound.width - PlayerComponent.radius, body.getPosition().y,
                     body.getAngle());
         }
-        if (body.getPosition().y < GameManager.playerMoveBound.y + PlayerComponent.radius) {
-            body.setTransform(body.getPosition().x, GameManager.playerMoveBound.y + PlayerComponent.radius,
+        if (body.getPosition().y < GameManager.moveBound.y + PlayerComponent.radius) {
+            body.setTransform(body.getPosition().x, GameManager.moveBound.y + PlayerComponent.radius,
                     body.getAngle());
-        } else if (body.getPosition().y > GameManager.playerMoveBound.height - PlayerComponent.radius) {
-            body.setTransform(body.getPosition().x, GameManager.playerMoveBound.height - PlayerComponent.radius,
+        } else if (body.getPosition().y > GameManager.moveBound.height - PlayerComponent.radius) {
+            body.setTransform(body.getPosition().x, GameManager.moveBound.height - PlayerComponent.radius,
                     body.getAngle());
         }
 

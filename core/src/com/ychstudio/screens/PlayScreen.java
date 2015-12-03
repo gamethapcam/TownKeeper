@@ -82,7 +82,6 @@ public class PlayScreen implements Screen {
 
         AStarPathFinding aStarPathFinding = AStarPathFinding.getInstance();
         aStarPathFinding.init(world, worldBuilder.getMapWidth(), worldBuilder.getMapHeight());
-
         camera.position.set(new Vector3(GameManager.playerCurrentPos, 0));
     }
 
@@ -109,11 +108,10 @@ public class PlayScreen implements Screen {
     }
 
     private void updateCamera() {
-        float targetX = MathUtils.clamp(GameManager.playerCurrentPos.x, GameManager.playerMoveBound.x + VIEW_WIDTH / 2f,
-                GameManager.playerMoveBound.width - VIEW_WIDTH / 2f);
-        float targetY = MathUtils.clamp(GameManager.playerCurrentPos.y,
-                GameManager.playerMoveBound.y + VIEW_HEIGHT / 2f,
-                GameManager.playerMoveBound.height - VIEW_HEIGHT / 2f);
+        float targetX = MathUtils.clamp(GameManager.playerCurrentPos.x, GameManager.moveBound.x + VIEW_WIDTH / 2f,
+                GameManager.moveBound.width - VIEW_WIDTH / 2f);
+        float targetY = MathUtils.clamp(GameManager.playerCurrentPos.y, GameManager.moveBound.y + VIEW_HEIGHT / 2f,
+                GameManager.moveBound.height - VIEW_HEIGHT / 2f);
         camera.position.lerp(tmpVector3.set(targetX, targetY, 0), 0.1f);
         camera.update();
     }

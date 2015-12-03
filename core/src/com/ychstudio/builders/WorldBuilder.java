@@ -50,7 +50,7 @@ public class WorldBuilder {
         mapWidth = groundLayer.getWidth();
         mapHeight = groundLayer.getHeight();
 
-        GameManager.playerMoveBound.set(0, 0, groundLayer.getWidth(), groundLayer.getHeight());
+        GameManager.moveBound.set(0, 0, groundLayer.getWidth(), groundLayer.getHeight());
 
         // load obstacles
         MapLayer obstacleLayer = mapLayers.get("Obstacles");

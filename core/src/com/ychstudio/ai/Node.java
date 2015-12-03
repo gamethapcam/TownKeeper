@@ -1,5 +1,7 @@
 package com.ychstudio.ai;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class Node {
 
     int gCost;
@@ -8,10 +10,12 @@ public class Node {
     Node prevNode;
     Node nextNode;
 
-    float x;
-    float y;
+    int x;
+    int y;
 
-    public Node(float x, float y) {
+    boolean closed;
+
+    public Node(int x, int y) {
         this.x = x;
         this.y = y;
 
@@ -20,10 +24,16 @@ public class Node {
 
         prevNode = null;
         nextNode = null;
+
+        closed = false;
     }
 
     public int fCost() {
         return gCost + hCost;
+    }
+
+    public Vector2 getPos() {
+        return new Vector2(x + 0.5f, y + 0.5f);
     }
 
 }

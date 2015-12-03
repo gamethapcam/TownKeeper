@@ -23,7 +23,8 @@ public class GameManager implements Disposable {
     public static Vector2 playerSpawnPos = new Vector2();
     public static Vector2 playerCurrentPos = new Vector2();
 
-    public static Rectangle playerMoveBound = new Rectangle();
+    // the area bound that player and NPC can move
+    public static Rectangle moveBound = new Rectangle();
 
     private GameManager() {
         assetManager = new AssetManager();
