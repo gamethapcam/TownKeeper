@@ -25,7 +25,7 @@ public class TentSystem extends IteratingSystem {
 
         tent.countDown -= deltaTime;
 
-        if (tent.timeUp()) {
+        if (tent.isTimeUp()) {
             if (!tent.isFull()) {
                 tent.currentVillagers++;
                 ActorBuilder actorBuilder = ActorBuilder.getInstance(world, getEngine());
