@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ychstudio.ecs.components.AnimationComponent;
+import com.ychstudio.ecs.components.FarmComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RendererComponent;
@@ -161,6 +163,12 @@ public class ActorBuilder {
 
         body.setUserData(entity);
 
+    }
+
+    public void createFarm(Rectangle rectangle) {
+        Entity entity = new Entity();
+        entity.add(new FarmComponent(rectangle));
+        engine.addEntity(entity);
     }
 
 }

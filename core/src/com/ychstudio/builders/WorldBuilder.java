@@ -117,6 +117,17 @@ public class WorldBuilder {
             }
         }
 
+        // TODO load farms
+        MapLayer farmLayer = mapLayers.get("Farms");
+        if (farmLayer != null) {
+            for (MapObject mapObject : farmLayer.getObjects()) {
+                Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+                correctRectangle(rectangle);
+
+                actorBuilder.createFarm(rectangle);
+            }
+        }
+
         // TODO: load buildings
 
         // TODO: load animals

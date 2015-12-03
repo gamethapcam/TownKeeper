@@ -19,6 +19,7 @@ import com.ychstudio.TownKeeper;
 import com.ychstudio.ai.AStarPathFinding;
 import com.ychstudio.builders.WorldBuilder;
 import com.ychstudio.ecs.systems.AnimationSystem;
+import com.ychstudio.ecs.systems.FarmSystem;
 import com.ychstudio.ecs.systems.LifeSystem;
 import com.ychstudio.ecs.systems.PhysicsSystem;
 import com.ychstudio.ecs.systems.PlayerSystem;
@@ -66,6 +67,7 @@ public class PlayScreen implements Screen {
 
         engine.addSystem(new PlayerSystem());
         engine.addSystem(new VillagerSystem());
+        engine.addSystem(new FarmSystem(world));
         engine.addSystem(new LifeSystem());
         engine.addSystem(new TentSystem(world));
         engine.addSystem(new PhysicsSystem());
