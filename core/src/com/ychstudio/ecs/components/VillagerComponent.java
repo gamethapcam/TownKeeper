@@ -3,6 +3,7 @@ package com.ychstudio.ecs.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.ychstudio.ai.Node;
 
 public class VillagerComponent implements Component {
 
@@ -23,6 +24,9 @@ public class VillagerComponent implements Component {
     public Vector2 targetPos;
     public Vector2 targetDir;
 
+    // current moving-toward position of A* path finding node
+    public Node pathNode;
+
     public VillagerComponent(TentComponent tent) {
         this.tent = tent;
 
@@ -41,6 +45,10 @@ public class VillagerComponent implements Component {
 
     public void resetRandomTimer() {
         randomTimer = MathUtils.random(1f, 5f);
+    }
+
+    public void makeRandomTimerUp() {
+        randomTimer = 0;
     }
 
 }

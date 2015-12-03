@@ -355,6 +355,14 @@ public class AStarPathFinding {
         return x < 0 || x >= mapWidth || y < 0 || y >= mapHeight;
     }
 
+    public boolean isWalkableAt(int x, int y) {
+        return map[y][x] != NON_WALKABLE;
+    }
+
+    public boolean isWalkableAt(Vector2 pos) {
+        return map[(int) pos.y][(int) pos.x] != NON_WALKABLE;
+    }
+
     protected void printResult(int map[][], Node source) { // for debug
 
         Node node = source.nextNode;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.ychstudio.ai.AStarPathFinding;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
@@ -41,12 +42,12 @@ public class VillagerSystem extends IteratingSystem {
 
         villager.updateRandomTimer(deltaTime);
         if (villager.isRandomTimerUp()) {
+            villager.resetRandomTimer();
             state.setState(chooseRandom(VillagerComponent.IDLE, VillagerComponent.WANDER));
             if (state.getState() == VillagerComponent.WANDER) {
                 // set a new target position
-                setNewTargetPos(villager, body.getPosition(), 6f);
+                setNewTargetPos(villager, body.getPosition(), 3f, 6f);
             }
-            villager.resetRandomTimer();
         }
 
         switch (state.getState()) {
@@ -57,31 +58,24 @@ public class VillagerSystem extends IteratingSystem {
             case VillagerComponent.WANDER:
                 state.setState(VillagerComponent.WANDER);
 
+                if (villager.pathNode == null) {
+                    villager.makeRandomTimerUp();
+                    break;
+                }
+
+                if (body.getPosition().dst(villager.pathNode.getPosition()) < 0.1f) {
+                    villager.pathNode = villager.pathNode.nextNode;
+                    break;
+                }
+
+                villager.targetDir.set(villager.pathNode.getPosition().x - body.getPosition().x,
+                        villager.pathNode.getPosition().y - body.getPosition().y);
+
                 body.applyLinearImpulse(tmpV1.set(villager.targetDir).scl(villager.speed), body.getWorldCenter(), true);
                 if (body.getLinearVelocity().len2() > villager.maxSpeed * villager.maxSpeed) {
                     tmpV1.set(body.getLinearVelocity());
                     tmpV1.setLength(villager.maxSpeed);
                     body.setLinearVelocity(tmpV1);
-                }
-
-                if (checkHitWall(villager, body)) {
-                    setNewTargetPos(villager, body.getPosition(), 6f);
-                }
-
-                // limit villager's moving area
-                if (body.getPosition().x < GameManager.moveBound.x + VillagerComponent.radius) {
-                    body.setTransform(GameManager.moveBound.x + VillagerComponent.radius, body.getPosition().y,
-                            body.getAngle());
-                } else if (body.getPosition().x > GameManager.moveBound.width - VillagerComponent.radius) {
-                    body.setTransform(GameManager.moveBound.width - VillagerComponent.radius, body.getPosition().y,
-                            body.getAngle());
-                }
-                if (body.getPosition().y < GameManager.moveBound.y + VillagerComponent.radius) {
-                    body.setTransform(body.getPosition().x, GameManager.moveBound.y + VillagerComponent.radius,
-                            body.getAngle());
-                } else if (body.getPosition().y > GameManager.moveBound.height - VillagerComponent.radius) {
-                    body.setTransform(body.getPosition().x, GameManager.moveBound.height - VillagerComponent.radius,
-                            body.getAngle());
                 }
                 break;
             default:
@@ -90,7 +84,7 @@ public class VillagerSystem extends IteratingSystem {
 
     }
 
-    private boolean checkHitWall(VillagerComponent villager, Body body) {
+    protected boolean checkHitWall(VillagerComponent villager, Body body) {
         hitWall = false;
         RayCastCallback rayCastCallback = new RayCastCallback() {
 
@@ -127,13 +121,24 @@ public class VillagerSystem extends IteratingSystem {
         return hitWall;
     }
 
-    private void setNewTargetPos(VillagerComponent villager, Vector2 currentPos, float radius) {
-        float angle = MathUtils.random(360);
+    private void setNewTargetPos(VillagerComponent villager, Vector2 currentPos, float minRadius, float maxRadius) {
+        AStarPathFinding aStarPathFinding = AStarPathFinding.getInstance();
 
-        villager.targetPos.set(villager.tent.pos.x + MathUtils.sinDeg(angle) * radius,
+        float angle = MathUtils.random(360);
+        float radius = MathUtils.random(minRadius, maxRadius);
+
+        tmpV1.set(villager.tent.pos.x + MathUtils.sinDeg(angle) * radius,
                 villager.tent.pos.y + MathUtils.cosDeg(angle) * radius);
 
-        villager.targetDir.set(villager.targetPos.x - currentPos.x, villager.targetPos.y - currentPos.y);
+        while (!aStarPathFinding.isWalkableAt(tmpV1)) {
+            angle = MathUtils.random(360);
+            radius = MathUtils.random(minRadius, maxRadius);
+            tmpV1.set(villager.tent.pos.x + MathUtils.sinDeg(angle) * radius,
+                    villager.tent.pos.y + MathUtils.cosDeg(angle) * radius);
+        }
+
+        villager.targetPos.set(tmpV1);
+        villager.pathNode = aStarPathFinding.findPath(currentPos, tmpV1);
     }
 
     protected int chooseRandom(int... choices) {
