@@ -38,7 +38,17 @@ public class AStarPathFinding {
         return instance;
     }
 
-    // only need to be called once the world is created
+    /**
+     * Initialize the map info of A* path finding, only need to be called once
+     * the world is created
+     * 
+     * @param world
+     *            the Box2D world
+     * @param mapWidth
+     *            the map width
+     * @param mapHeight
+     *            the map height
+     */
     public void init(World world, int mapWidth, int mapHeight) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -56,6 +66,15 @@ public class AStarPathFinding {
         }
     }
 
+    /**
+     * find path that allows diagonal walk
+     * 
+     * @param source
+     *            the origin
+     * @param target
+     *            the destination
+     * @return the node to start walking (the source's next node)
+     */
     public Node findPath(Vector2 source, Vector2 target) {
 
         nodeMap = new Node[mapHeight][mapWidth];
@@ -78,6 +97,134 @@ public class AStarPathFinding {
         boolean targetReached = false;
 
         while (!openNodes.isEmpty()) {
+
+            // sort to find the node with lowest fCost
+            openNodes.sort(new Comparator<Node>() {
+                @Override
+                public int compare(Node n1, Node n2) {
+                    return n1.fCost() - n2.fCost();
+                }
+            });
+
+            Node evaluatingNode = openNodes.get(0);
+
+            // check neighbor nodes
+            for (int y = -1; y <= 1; y++) {
+                for (int x = -1; x <= 1; x++) {
+                    if (x == 0 && y == 0) {
+                        // no need to evaluate the node itself
+                        continue;
+                    }
+
+                    int neighborX = evaluatingNode.x + x;
+                    int neighborY = evaluatingNode.y + y;
+
+                    if (outOfMap(neighborX, neighborY)) {
+                        continue;
+                    }
+
+                    if (map[neighborY][neighborX] == NON_WALKABLE) {
+                        continue;
+                    } else {
+                        Node neighborNode = nodeMap[neighborY][neighborX];
+
+                        if (neighborNode == targetNode) {
+                            targetNode.prevNode = evaluatingNode;
+                            targetReached = true;
+                            break;
+                        } else if (neighborNode == null) {
+                            neighborNode = new Node(neighborX, neighborY);
+                            neighborNode.gCost = evaluatingNode.gCost + (Math.abs(x) + Math.abs(y) > 1 ? 14 : 10);
+
+                            int xDist = Math.abs(tX - neighborX);
+                            int yDist = Math.abs(tY - neighborY);
+
+                            neighborNode.hCost = (Math.max(xDist, yDist) - Math.min(xDist, yDist)) * 10
+                                    + Math.min(xDist, yDist) * 14;
+
+                            neighborNode.prevNode = evaluatingNode;
+                            nodeMap[neighborY][neighborX] = neighborNode;
+                            openNodes.add(neighborNode);
+                        } else {
+
+                            if (neighborNode.closed) {
+                                continue;
+                            }
+                            // re-calculate gCost
+                            if (neighborNode.gCost > evaluatingNode.gCost + (Math.abs(x) + Math.abs(y) > 1 ? 14 : 10)) {
+                                neighborNode.gCost = evaluatingNode.gCost + (Math.abs(x) + Math.abs(y) > 1 ? 14 : 10);
+                                neighborNode.prevNode = evaluatingNode;
+                            }
+                        }
+                    }
+
+                }
+                if (targetReached) {
+                    break;
+                }
+            }
+
+            evaluatingNode.closed = true;
+            openNodes.remove(evaluatingNode);
+
+            if (targetReached) {
+                // openNodes.clear();
+                break;
+            }
+
+        }
+
+        if (!targetReached) {
+            // cannot find path
+            return null;
+        }
+
+        // trace to the first node (source node)
+        Node node = targetNode;
+        while (node.prevNode != null)
+
+        {
+            node.prevNode.nextNode = node;
+            node = node.prevNode;
+        }
+
+        // return source' next node
+        return node.nextNode;
+    }
+
+    /**
+     * find path without diagonal walking
+     * 
+     * @param source
+     *            the origin
+     * @param target
+     *            the destination
+     * @return the node to start walking (the source's next node)
+     */
+    public Node findPathOrtho(Vector2 source, Vector2 target) {
+
+        nodeMap = new Node[mapHeight][mapWidth];
+
+        List<Node> openNodes = new ArrayList<>();
+
+        int sX = (int) source.x;
+        int sY = (int) source.y;
+        int tX = (int) target.x;
+        int tY = (int) target.y;
+
+        Node targetNode = new Node(tX, tY);
+        Node sourceNode = new Node(sX, sY);
+
+        nodeMap[sY][sX] = sourceNode;
+        nodeMap[tY][tX] = targetNode;
+
+        openNodes.add(sourceNode);
+
+        boolean targetReached = false;
+
+        while (!openNodes.isEmpty()) {
+
+            // sort to find the node with lowest fCost
             openNodes.sort(new Comparator<Node>() {
                 @Override
                 public int compare(Node n1, Node n2) {
@@ -90,6 +237,7 @@ public class AStarPathFinding {
             // check horizontal neighbor nodes
             for (int x = -1; x <= 1; x++) {
                 if (x == 0) {
+                    // no need to evaluate the node itself
                     continue;
                 }
 
@@ -133,6 +281,7 @@ public class AStarPathFinding {
             if (!targetReached) {
                 for (int y = -1; y <= 1; y++) {
                     if (y == 0) {
+                        // no need to evaluate the node itself
                         continue;
                     }
 
@@ -176,8 +325,8 @@ public class AStarPathFinding {
             openNodes.remove(evaluatingNode);
 
             if (targetReached) {
-                break;
                 // openNodes.clear();
+                break;
             }
         }
 
