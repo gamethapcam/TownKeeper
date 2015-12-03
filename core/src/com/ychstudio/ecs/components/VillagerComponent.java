@@ -51,4 +51,8 @@ public class VillagerComponent implements Component {
         randomTimer = 0;
     }
 
+    public void makeRandomTimerForever() {
+        randomTimer = Float.MAX_VALUE;
+    }
+
 }

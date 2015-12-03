@@ -47,6 +47,7 @@ public class VillagerSystem extends IteratingSystem {
             if (state.getState() == VillagerComponent.WANDER) {
                 // set a new target position
                 setNewTargetPos(villager, body.getPosition(), 3f, 6f);
+                villager.makeRandomTimerForever();
             }
         }
 
