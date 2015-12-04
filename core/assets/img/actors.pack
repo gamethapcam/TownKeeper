@@ -5,15 +5,36 @@ filter: Nearest,Nearest
 repeat: none
 Villager
   rotate: false
-  xy: 1, 1
+  xy: 1, 131
   size: 192, 32
   orig: 192, 32
   offset: 0, 0
   index: -1
+Sheep
+  rotate: false
+  xy: 1, 1
+  size: 96, 128
+  orig: 96, 128
+  offset: 0, 0
+  index: -1
 Player
   rotate: false
-  xy: 195, 1
+  xy: 195, 131
   size: 192, 32
   orig: 192, 32
+  offset: 0, 0
+  index: -1
+Chicken
+  rotate: false
+  xy: 99, 1
+  size: 96, 128
+  orig: 96, 128
+  offset: 0, 0
+  index: -1
+Cow
+  rotate: false
+  xy: 197, 1
+  size: 96, 128
+  orig: 96, 128
   offset: 0, 0
   index: -1

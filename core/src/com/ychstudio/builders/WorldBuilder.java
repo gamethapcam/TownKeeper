@@ -11,11 +11,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ychstudio.gamesys.GameManager;
 
@@ -56,53 +51,23 @@ public class WorldBuilder {
         MapLayer obstacleLayer = mapLayers.get("Obstacles");
         if (obstacleLayer != null) {
             for (MapObject mapObject : obstacleLayer.getObjects()) {
-                PolygonShape polygonShape = new PolygonShape();
                 if (mapObject instanceof RectangleMapObject) {
                     Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
                     correctRectangle(rectangle);
 
-                    BodyDef bodyDef = new BodyDef();
-                    bodyDef.type = BodyType.StaticBody;
-                    bodyDef.position.set(rectangle.x + rectangle.width / 2f, rectangle.y + rectangle.height / 2f);
-
-                    Body body = world.createBody(bodyDef);
-
-                    polygonShape = new PolygonShape();
-                    polygonShape.setAsBox(rectangle.width / 2f, rectangle.height / 2f);
-
-                    FixtureDef fixtureDef = new FixtureDef();
-                    fixtureDef.shape = polygonShape;
-                    fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-                    fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
-
-                    body.createFixture(fixtureDef);
+                    actorBuilder.createObstacle(rectangle);
 
                 } else if (mapObject instanceof PolygonMapObject) {
                     Polygon polygon = ((PolygonMapObject) mapObject).getPolygon();
+
                     float[] vertices = polygon.getVertices();
 
                     for (int i = 0; i < vertices.length; i++) {
                         vertices[i] = vertices[i] / GameManager.PPM;
                     }
-
-                    BodyDef bodyDef = new BodyDef();
-                    bodyDef.type = BodyType.StaticBody;
-                    bodyDef.position.set(polygon.getX() / GameManager.PPM, polygon.getY() / GameManager.PPM);
-
-                    Body body = world.createBody(bodyDef);
-
-                    polygonShape = new PolygonShape();
-                    polygonShape.set(vertices);
-
-                    FixtureDef fixtureDef = new FixtureDef();
-                    fixtureDef.shape = polygonShape;
-                    fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-                    fixtureDef.filter.maskBits = GameManager.PLAYER_BIT;
-
-                    body.createFixture(fixtureDef);
-
+                    actorBuilder.createObstacle(polygon.getX() / GameManager.PPM, polygon.getY() / GameManager.PPM,
+                            vertices);
                 }
-                polygonShape.dispose();
             }
         }
 
@@ -117,7 +82,7 @@ public class WorldBuilder {
             }
         }
 
-        // TODO load farms
+        // load farms
         MapLayer farmLayer = mapLayers.get("Farms");
         if (farmLayer != null) {
             for (MapObject mapObject : farmLayer.getObjects()) {
