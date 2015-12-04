@@ -347,6 +347,7 @@ public class ActorBuilder {
         
         keyFrames.clear();
         
+        // TODO check if the Animal uses Move-up / Move-down / Move-right / Move-left animations
         // Move up
         for(int i = 0; i < 3; i++) {
             keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 3, 32, 32));
@@ -381,10 +382,20 @@ public class ActorBuilder {
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
         animationComponent.putAnimation(AnimalComponent.MOVE_UP, animation);
         
+        keyFrames.clear();
+        
+        // Move
+        for(int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 0, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(AnimalComponent.MOVE, animation);
+        
         Entity entity = new Entity();
         entity.add(new AnimalComponent(farm, kind));
         entity.add(new RigidBodyComponent(body));
         entity.add(new TransformComponent());
+        entity.add(new LifeComponent(5));
         entity.add(new StateComponent(AnimalComponent.IDLE));
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
         entity.add(animationComponent);

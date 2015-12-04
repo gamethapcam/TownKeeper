@@ -5,21 +5,28 @@ filter: Nearest,Nearest
 repeat: none
 Villager
   rotate: false
-  xy: 1, 131
+  xy: 1, 165
   size: 192, 32
   orig: 192, 32
   offset: 0, 0
   index: -1
 Sheep
   rotate: false
-  xy: 1, 1
+  xy: 1, 35
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
+Hunter
+  rotate: false
+  xy: 195, 165
+  size: 192, 32
+  orig: 192, 32
+  offset: 0, 0
+  index: -1
 Player
   rotate: false
-  xy: 195, 131
+  xy: 99, 131
   size: 192, 32
   orig: 192, 32
   offset: 0, 0

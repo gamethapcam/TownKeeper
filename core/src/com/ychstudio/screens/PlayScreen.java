@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ychstudio.TownKeeper;
 import com.ychstudio.ai.AStarPathFinding;
 import com.ychstudio.builders.WorldBuilder;
+import com.ychstudio.ecs.systems.AnimalSystem;
 import com.ychstudio.ecs.systems.AnimationSystem;
 import com.ychstudio.ecs.systems.FarmSystem;
 import com.ychstudio.ecs.systems.LifeSystem;
@@ -67,6 +68,7 @@ public class PlayScreen implements Screen {
 
         engine.addSystem(new PlayerSystem());
         engine.addSystem(new VillagerSystem());
+        engine.addSystem(new AnimalSystem());
         engine.addSystem(new FarmSystem(world));
         engine.addSystem(new LifeSystem());
         engine.addSystem(new TentSystem(world));

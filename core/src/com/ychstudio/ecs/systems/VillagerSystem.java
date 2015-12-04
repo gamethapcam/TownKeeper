@@ -15,6 +15,7 @@ import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
 import com.ychstudio.ecs.components.VillagerComponent;
 import com.ychstudio.gamesys.GameManager;
+import com.ychstudio.utils.MyUtils;
 
 public class VillagerSystem extends IteratingSystem {
 
@@ -43,7 +44,7 @@ public class VillagerSystem extends IteratingSystem {
         villager.updateRandomTimer(deltaTime);
         if (villager.isRandomTimerUp()) {
             villager.resetRandomTimer();
-            state.setState(chooseRandom(VillagerComponent.IDLE, VillagerComponent.WANDER));
+            state.setState(MyUtils.chooseRandom(VillagerComponent.IDLE, VillagerComponent.WANDER));
             if (state.getState() == VillagerComponent.WANDER) {
                 // set a new target position
                 setNewTargetPos(villager, body.getPosition(), 3f, 6f);
@@ -140,10 +141,6 @@ public class VillagerSystem extends IteratingSystem {
 
         villager.targetPos.set(tmpV1);
         villager.pathNode = aStarPathFinding.findPath(currentPos, tmpV1);
-    }
-
-    protected int chooseRandom(int... choices) {
-        return choices[MathUtils.random(choices.length - 1)];
     }
 
 }

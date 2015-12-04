@@ -2,6 +2,7 @@ package com.ychstudio.ecs.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class AnimalComponent implements Component {
 
@@ -13,11 +14,33 @@ public class AnimalComponent implements Component {
         }
     }
     
+    public static enum Direction {
+        UP(0, 1f),
+        DOWN(0, -1f),
+        LEFT(-1f, 0),
+        RIGHT(1f, 0);
+        
+        private final Vector2 dir;
+        
+        private Direction(float x, float y) {
+            dir = new Vector2(x, y);
+        }
+        
+        public static Direction getRandomDirection() {
+            return Direction.values()[MathUtils.random(Direction.values().length - 1)];
+        }
+        
+        public Vector2 getDir() {
+            return dir;
+        }
+    }
+    
     public static final int IDLE = 0;
     public static final int MOVE_UP = 1;
     public static final int MOVE_DOWN = 2;
     public static final int MOVE_LEFT = 3;
     public static final int MOVE_RIGHT = 4;
+    public static final int MOVE = 5; 
 
     private Kind kind;
 
@@ -26,7 +49,9 @@ public class AnimalComponent implements Component {
     public FarmComponent farm;
 
     public float speed = 1f;
-    public float maxSpeed = 2f;
+    public float maxSpeed = 1f;
+    
+    private Direction currentDir;
 
     private float randomTimer;
 
@@ -38,6 +63,8 @@ public class AnimalComponent implements Component {
         this.farm = farm;
         this.kind = kind;
 
+        currentDir = Direction.getRandomDirection();
+        
         randomTimer = MathUtils.randomTriangular(1f, 3f);
     }
 
@@ -59,6 +86,15 @@ public class AnimalComponent implements Component {
 
     public void makeRandomTimerUp() {
         randomTimer = 0;
+    }
+    
+    public Vector2 getCurrentDir() {
+        return currentDir.getDir();
+    }
+    
+    public Vector2 getNewDir() {
+        currentDir = Direction.getRandomDirection();
+        return currentDir.getDir();
     }
 
 }
