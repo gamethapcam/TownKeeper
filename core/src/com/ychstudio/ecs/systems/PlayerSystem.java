@@ -14,6 +14,9 @@ import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
 import com.ychstudio.ecs.components.TransformComponent;
 import com.ychstudio.gamesys.GameManager;
+import com.ychstudio.jobsys.Job;
+import com.ychstudio.jobsys.Job.Type;
+import com.ychstudio.jobsys.JobBulletin;
 
 public class PlayerSystem extends IteratingSystem {
 
@@ -21,7 +24,6 @@ public class PlayerSystem extends IteratingSystem {
     protected ComponentMapper<LifeComponent> lifeM = ComponentMapper.getFor(LifeComponent.class);
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
-    protected ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
 
     private final Vector2 tmpV = new Vector2();
 
@@ -36,7 +38,6 @@ public class PlayerSystem extends IteratingSystem {
         LifeComponent life = lifeM.get(entity);
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         StateComponent state = stateM.get(entity);
-        TransformComponent transform = transformM.get(entity);
 
         Body body = rigidBody.body;
 
@@ -55,6 +56,16 @@ public class PlayerSystem extends IteratingSystem {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             body.applyLinearImpulse(tmpV.set(player.speed, 0), body.getWorldCenter(), true);
+        }
+        
+        // make job vacancy
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            // TODO job function
+            if (player.gold > 0) {
+                player.gold--;
+                JobBulletin jobBulletin = JobBulletin.getInstance();
+                jobBulletin.addNewJob(new Job(Type.HUNTER, new Vector2(body.getPosition())));
+            }
         }
 
         // limit velocity

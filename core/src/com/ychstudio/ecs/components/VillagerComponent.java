@@ -23,6 +23,9 @@ public class VillagerComponent implements Component {
 
     public Vector2 targetPos;
     public Vector2 targetDir;
+    
+    // looking for a job every 1 second
+    public float jobLookingTimer = 1f;
 
     // current moving-toward position of A* path finding node
     public Node pathNode;

@@ -12,5 +12,7 @@ public class PlayerComponent implements Component {
 
     public float speed = 1f;
     public float maxSpeed = 2.2f;
+    
+    public int gold = 5;
 
 }

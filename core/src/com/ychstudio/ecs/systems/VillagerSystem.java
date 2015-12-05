@@ -15,6 +15,8 @@ import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
 import com.ychstudio.ecs.components.VillagerComponent;
 import com.ychstudio.gamesys.GameManager;
+import com.ychstudio.jobsys.Job;
+import com.ychstudio.jobsys.JobBulletin;
 import com.ychstudio.utils.MyUtils;
 
 public class VillagerSystem extends IteratingSystem {
@@ -49,6 +51,20 @@ public class VillagerSystem extends IteratingSystem {
                 // set a new target position
                 setNewTargetPos(villager, body.getPosition(), 3f, 6f);
                 villager.makeRandomTimerForever();
+            }
+        }
+        
+        // TODO get a job
+        villager.jobLookingTimer -= deltaTime;
+        if (villager.jobLookingTimer <= 0) {
+            villager.jobLookingTimer = 1f;
+            
+            Job job = JobBulletin.getInstance().fetchJob();
+            if (job != null) {
+                System.out.println("I get job of being a " + job.type + " of: " + job.toString());
+            }
+            else {
+                System.out.println("no job...");
             }
         }
 
