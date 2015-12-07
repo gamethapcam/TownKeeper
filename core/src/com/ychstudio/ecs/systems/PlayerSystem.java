@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ychstudio.builders.ActorBuilder;
 import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
@@ -67,11 +68,15 @@ public class PlayerSystem extends IteratingSystem {
 
             // make job vacancy
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                // TODO job function
+                // job function
                 if (player.gold > 0) {
                     player.gold--;
                     JobBulletin jobBulletin = JobBulletin.getInstance();
-                    jobBulletin.addNewJob(new Job(Type.HUNTER, new Vector2(body.getPosition())));
+                    // TODO create job should be done by the store
+                    Job job = new Job(Type.HUNTER, new Vector2(body.getPosition()));
+                    jobBulletin.addNewJob(job);
+                    ActorBuilder actorBuilder = ActorBuilder.getInstance(body.getWorld(), getEngine());
+                    actorBuilder.createNPCItem(body.getPosition(), job);
                 }
             }
 

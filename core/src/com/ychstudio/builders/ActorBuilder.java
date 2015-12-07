@@ -22,6 +22,7 @@ import com.ychstudio.ecs.components.AnimalComponent.Kind;
 import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.FarmComponent;
 import com.ychstudio.ecs.components.LifeComponent;
+import com.ychstudio.ecs.components.NPC_ItemComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
 import com.ychstudio.ecs.components.RendererComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
@@ -30,6 +31,7 @@ import com.ychstudio.ecs.components.TentComponent;
 import com.ychstudio.ecs.components.TransformComponent;
 import com.ychstudio.ecs.components.VillagerComponent;
 import com.ychstudio.gamesys.GameManager;
+import com.ychstudio.jobsys.Job;
 
 /**
  * ActorBuilder is used to create objects in the game, such as player,
@@ -294,7 +296,7 @@ public class ActorBuilder {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.filter.categoryBits = GameManager.PLAYER_BIT;
+        fixtureDef.filter.categoryBits = GameManager.NPC_BIT;
         fixtureDef.filter.maskBits = GameManager.WALL_BIT;
 
         body.createFixture(fixtureDef);
@@ -568,6 +570,44 @@ public class ActorBuilder {
         
         engine.addEntity(entity);
         body.setUserData(entity);
+    }
+    
+    /**
+     * Create an NPC item
+     * 
+     * @param job
+     *            the job
+     */
+    public void createNPCItem(Vector2 spawnPosition, Job job) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.KinematicBody;
+        bodyDef.position.set(spawnPosition);
+        bodyDef.linearDamping = 6f;
+        
+        Body body = world.createBody(bodyDef);
+        
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(NPC_ItemComponent.radius);
+        
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circleShape;
+        fixtureDef.filter.categoryBits = GameManager.NPC_ITEM_BIT;
+        fixtureDef.filter.maskBits = GameManager.NPC_BIT;
+        
+        body.createFixture(fixtureDef);
+        
+        circleShape.dispose();
+        
+        TextureRegion itemTextureRegiond = assetManager.get("img/actors.pack", TextureAtlas.class).findRegion("Weapons");
+        TextureRegion textureRegion = new TextureRegion(itemTextureRegiond, 24 * 2, 0, 24, 24);
+        
+        Entity entity = new Entity();
+        entity.add(new NPC_ItemComponent(job));
+        entity.add(new RigidBodyComponent(body));
+        entity.add(new TransformComponent());
+        entity.add(new RendererComponent(textureRegion, 0.75f, 0.75f));
+        
+        engine.addEntity(entity);
     }
 
 }

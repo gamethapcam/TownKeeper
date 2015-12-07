@@ -51,23 +51,23 @@ public class VillagerSystem extends IteratingSystem {
             villager.resetRandomTimer();
             state.setState(MyUtils.chooseRandom(VillagerComponent.STATE_IDLE, VillagerComponent.STATE_WANDER));
             if (state.getState() == VillagerComponent.STATE_WANDER) {
-                // set a new target position
-                setNewTargetPos(villager, body.getPosition(), 3f, 6f);
+                // set a random target position
+                setRandomTargetPos(villager, body.getPosition(), 3f, 6f);
                 villager.makeRandomTimerForever();
             }
         }
         
-        // TODO get a job
         villager.jobLookingTimer -= deltaTime;
         if (villager.jobLookingTimer <= 0) {
             villager.jobLookingTimer = 1f;
             
+            // try to get a job
             Job job = JobBulletin.getInstance().fetchJob();
             if (job != null) {
-                System.out.println("I get job of being a " + job.type + " of: " + job.toString());
-            }
-            else {
-                System.out.println("no job...");
+                // head to the job location
+                villager.targetPos.set(job.location);
+                setTargetPos(villager, body.getPosition());
+                state.setState(VillagerComponent.STATE_RECRUIT);
             }
         }
 
@@ -91,6 +91,7 @@ public class VillagerSystem extends IteratingSystem {
                         break;
                 }
                 break;
+            case VillagerComponent.STATE_RECRUIT:
             case VillagerComponent.STATE_WANDER:
 
                 if (villager.pathNode == null) {
@@ -165,7 +166,7 @@ public class VillagerSystem extends IteratingSystem {
         return hitWall;
     }
 
-    private void setNewTargetPos(VillagerComponent villager, Vector2 currentPos, float minRadius, float maxRadius) {
+    private void setRandomTargetPos(VillagerComponent villager, Vector2 currentPos, float minRadius, float maxRadius) {
         AStarPathFinding aStarPathFinding = AStarPathFinding.getInstance();
 
         float angle = MathUtils.random(360);
@@ -183,6 +184,11 @@ public class VillagerSystem extends IteratingSystem {
 
         villager.targetPos.set(tmpV1);
         villager.pathNode = aStarPathFinding.findPath(currentPos, tmpV1);
+    }
+    
+    private void setTargetPos(VillagerComponent villager, Vector2 currentPos) {
+        AStarPathFinding aStarPathFinding = AStarPathFinding.getInstance();
+        villager.pathNode = aStarPathFinding.findPath(currentPos, villager.targetPos);
     }
 
 }
