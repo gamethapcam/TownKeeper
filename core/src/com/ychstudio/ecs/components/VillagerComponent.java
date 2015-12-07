@@ -7,11 +7,23 @@ import com.ychstudio.ai.Node;
 
 public class VillagerComponent implements Component {
 
-    public static final int IDLE = 0;
-    public static final int WANDER = 1;
-    public static final int RECRUIT = 2;
-    public static final int DIE = 3;
-
+    public static final int STATE_IDLE = 0;
+    public static final int STATE_WANDER = 1;
+    public static final int STATE_RECRUIT = 2;
+    public static final int STATE_DIE = 3;
+    
+    public static final int ANIM_IDLE_UP = 0;
+    public static final int ANIM_IDLE_DOWN = 1;
+    public static final int ANIM_IDLE_LEFT = 2;
+    public static final int ANIM_IDLE_RIGHT = 3;
+    public static final int ANIM_MOVE_UP = 4;
+    public static final int ANIM_MOVE_DOWN = 5;
+    public static final int ANIM_MOVE_LEFT = 6;
+    public static final int ANIM_MOVE_RIGHT = 7;
+    public static final int ANIM_DIE_1 = 8;
+    public static final int ANIM_DIE_2 = 9;
+    public static final int ANIM_DIE_3 = 10;
+    
     public static float radius = 0.48f;
 
     public TentComponent tent;

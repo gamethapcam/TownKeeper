@@ -23,7 +23,7 @@ public class PlayerComponent implements Component {
     public static float radius = 0.48f;
 
     public float speed = 1f;
-    public float maxSpeed = 2.2f;
+    public float maxSpeed = 2.4f;
     
     public int gold = 5;
 

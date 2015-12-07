@@ -78,7 +78,7 @@ public class PlayerSystem extends IteratingSystem {
             // limit velocity
             if (body.getLinearVelocity().len2() > player.maxSpeed * player.maxSpeed) {
                 tmpV.set(body.getLinearVelocity());
-                tmpV.nor();
+                tmpV.setLength(player.maxSpeed);
                 body.setLinearVelocity(tmpV);
             }
 

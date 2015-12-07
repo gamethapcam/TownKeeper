@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ychstudio.ai.AStarPathFinding;
+import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
@@ -25,13 +26,14 @@ public class VillagerSystem extends IteratingSystem {
     protected ComponentMapper<LifeComponent> lifeM = ComponentMapper.getFor(LifeComponent.class);
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
+    protected ComponentMapper<AnimationComponent> animationM = ComponentMapper.getFor(AnimationComponent.class);
 
     private final Vector2 tmpV1 = new Vector2();
     private final Vector2 tmpV2 = new Vector2();
     private boolean hitWall = false;
 
     public VillagerSystem() {
-        super(Family.all(VillagerComponent.class, LifeComponent.class, RigidBodyComponent.class, StateComponent.class)
+        super(Family.all(VillagerComponent.class, LifeComponent.class, RigidBodyComponent.class, AnimationComponent.class, StateComponent.class)
                 .get());
     }
 
@@ -40,14 +42,15 @@ public class VillagerSystem extends IteratingSystem {
         VillagerComponent villager = villagerM.get(entity);
         LifeComponent life = lifeM.get(entity);
         StateComponent state = stateM.get(entity);
+        AnimationComponent animation = animationM.get(entity);
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         Body body = rigidBody.body;
 
         villager.updateRandomTimer(deltaTime);
         if (villager.isRandomTimerUp()) {
             villager.resetRandomTimer();
-            state.setState(MyUtils.chooseRandom(VillagerComponent.IDLE, VillagerComponent.WANDER));
-            if (state.getState() == VillagerComponent.WANDER) {
+            state.setState(MyUtils.chooseRandom(VillagerComponent.STATE_IDLE, VillagerComponent.STATE_WANDER));
+            if (state.getState() == VillagerComponent.STATE_WANDER) {
                 // set a new target position
                 setNewTargetPos(villager, body.getPosition(), 3f, 6f);
                 villager.makeRandomTimerForever();
@@ -69,12 +72,26 @@ public class VillagerSystem extends IteratingSystem {
         }
 
         switch (state.getState()) {
-            case VillagerComponent.IDLE:
-                state.setState(VillagerComponent.IDLE);
+            case VillagerComponent.STATE_IDLE:
                 body.setLinearVelocity(0, 0);
+                switch (animation.getCurrentAnimation()) {
+                    case VillagerComponent.ANIM_MOVE_DOWN:
+                        animation.setCurrentAnimation(VillagerComponent.ANIM_IDLE_DOWN);
+                        break;
+                    case VillagerComponent.ANIM_MOVE_UP:
+                        animation.setCurrentAnimation(VillagerComponent.ANIM_IDLE_UP);
+                        break;
+                    case VillagerComponent.ANIM_MOVE_LEFT:
+                        animation.setCurrentAnimation(VillagerComponent.ANIM_IDLE_LEFT);
+                        break;
+                    case VillagerComponent.ANIM_MOVE_RIGHT:
+                        animation.setCurrentAnimation(VillagerComponent.ANIM_IDLE_RIGHT);
+                        break;
+                    default:
+                        break;
+                }
                 break;
-            case VillagerComponent.WANDER:
-                state.setState(VillagerComponent.WANDER);
+            case VillagerComponent.STATE_WANDER:
 
                 if (villager.pathNode == null) {
                     villager.makeRandomTimerUp();
@@ -95,7 +112,16 @@ public class VillagerSystem extends IteratingSystem {
                     tmpV1.setLength(villager.maxSpeed);
                     body.setLinearVelocity(tmpV1);
                 }
+                
+                if (Math.abs(body.getLinearVelocity().x) > Math.abs(body.getLinearVelocity().y)) {
+                    animation.setCurrentAnimation(body.getLinearVelocity().x > 0 ? VillagerComponent.ANIM_MOVE_RIGHT : VillagerComponent.ANIM_MOVE_LEFT);
+                }
+                else {
+                    animation.setCurrentAnimation(body.getLinearVelocity().y > 0 ? VillagerComponent.ANIM_MOVE_UP : VillagerComponent.ANIM_MOVE_DOWN);
+                }
                 break;
+            case VillagerComponent.STATE_DIE:
+                animation.setCurrentAnimation(VillagerComponent.ANIM_DIE_1);
             default:
                 break;
         }

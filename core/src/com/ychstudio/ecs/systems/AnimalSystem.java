@@ -72,7 +72,7 @@ public class AnimalSystem extends IteratingSystem {
                 break;
             case AnimalComponent.IDLE:
             default:
-                state.setState(VillagerComponent.IDLE);
+                state.setState(VillagerComponent.STATE_IDLE);
                 body.setLinearVelocity(0, 0);
                 break;
         }
