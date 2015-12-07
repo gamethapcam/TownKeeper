@@ -96,25 +96,100 @@ public class ActorBuilder {
 
         TextureRegion playerTextureRegion = assetManager.get("img/actors.pack", TextureAtlas.class)
                 .findRegion("Player");
-        TextureRegion textureRegion = new TextureRegion(playerTextureRegion, 32, 0, 32, 32);
-
-        AnimationComponent animationComponent = new AnimationComponent();
+        TextureRegion textureRegion = null;
+        
+        AnimationComponent animationComponent = new AnimationComponent(PlayerComponent.ANIM_IDLE_DOWN);
         Animation animation;
 
         Array<TextureRegion> keyFrames = new Array<>();
-        // IDLE
+        // IDLE_DOWN
+        textureRegion = new TextureRegion(playerTextureRegion, 32, 32 * 0, 32, 32);
         keyFrames.add(textureRegion);
-        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP);
-        animationComponent.putAnimation(PlayerComponent.IDLE, animation);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_IDLE_DOWN, animation);
+
+        keyFrames.clear();
+        
+        // IDLE_LEFT
+        textureRegion = new TextureRegion(playerTextureRegion, 32, 32 * 1, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_IDLE_LEFT, animation);
+
+        keyFrames.clear();
+        
+        // IDLE_RIGHT
+        textureRegion = new TextureRegion(playerTextureRegion, 32, 32 * 2, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_IDLE_RIGHT, animation);
+
+        keyFrames.clear();
+        
+        // IDLE_UP
+        textureRegion = new TextureRegion(playerTextureRegion, 32, 32 * 3, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_IDLE_UP, animation);
 
         keyFrames.clear();
 
-        // MOVE
+        // MOVE_DOWN
         for (int i = 0; i < 3; i++) {
-            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 0, 32, 32));
+            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 32 * 0, 32, 32));
         }
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(PlayerComponent.MOVE, animation);
+        animationComponent.putAnimation(PlayerComponent.ANIM_MOVE_DOWN, animation);
+        
+        keyFrames.clear();
+        
+        // MOVE_LEFT
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 32 * 1, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(PlayerComponent.ANIM_MOVE_LEFT, animation);
+        
+        keyFrames.clear();
+        
+        // MOVE_RIGHT
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 32 * 2, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(PlayerComponent.ANIM_MOVE_RIGHT, animation);
+        
+        keyFrames.clear();
+        
+        // MOVE_UP
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(playerTextureRegion, 32 * i, 32 * 3, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(PlayerComponent.ANIM_MOVE_UP, animation);
+        
+        keyFrames.clear();
+        
+        // DIE_1
+        keyFrames.add(new TextureRegion(playerTextureRegion, 32 * 0, 32 * 4, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_DIE_1, animation);
+
+        keyFrames.clear();
+
+        // DIE_2
+        keyFrames.add(new TextureRegion(playerTextureRegion, 32 * 1, 32 * 4, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_DIE_1, animation);
+
+        keyFrames.clear();
+
+        // DIE_3
+        keyFrames.add(new TextureRegion(playerTextureRegion, 32 * 2, 32 * 4, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(PlayerComponent.ANIM_DIE_1, animation);
+        
+        keyFrames.clear();
 
         Entity entity = new Entity();
         entity.add(new PlayerComponent());
@@ -122,7 +197,7 @@ public class ActorBuilder {
         entity.add(new TransformComponent());
         entity.add(new RigidBodyComponent(body));
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
-        entity.add(new StateComponent(PlayerComponent.IDLE));
+        entity.add(new StateComponent(PlayerComponent.STATE_IDLE));
         entity.add(animationComponent);
 
         engine.addEntity(entity);
