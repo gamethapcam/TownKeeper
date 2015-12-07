@@ -485,24 +485,50 @@ public class ActorBuilder {
                 break;
         }
         
-        TextureRegion textureRegion = new TextureRegion(animalTextureRegion, 32, 0, 32, 32);
+        TextureRegion textureRegion = null;
+        Animation animation = null;
         
-        AnimationComponent animationComponent = new AnimationComponent();
+        AnimationComponent animationComponent = new AnimationComponent(AnimalComponent.ANIM_IDLE_DOWN);
         Array<TextureRegion> keyFrames = new Array<>();
-        // Idle
+        
+        // Idle down
+        textureRegion = new TextureRegion(animalTextureRegion, 32, 32 * 0, 32, 32);
         keyFrames.add(textureRegion);
-        Animation animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
-        animationComponent.putAnimation(AnimalComponent.IDLE, animation);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(AnimalComponent.ANIM_IDLE_DOWN, animation);
         
         keyFrames.clear();
         
-        // TODO check if the Animal uses Move-up / Move-down / Move-right / Move-left animations
+        // Idle left
+        textureRegion = new TextureRegion(animalTextureRegion, 32, 32 * 1, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(AnimalComponent.ANIM_IDLE_LEFT, animation);
+        
+        keyFrames.clear();
+        
+        // Idle right
+        textureRegion = new TextureRegion(animalTextureRegion, 32, 32 * 2, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(AnimalComponent.ANIM_IDLE_RIGHT, animation);
+        
+        keyFrames.clear();
+        
+        // Idle up
+        textureRegion = new TextureRegion(animalTextureRegion, 32, 32 * 3, 32, 32);
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(AnimalComponent.ANIM_IDLE_UP, animation);
+        
+        keyFrames.clear();
+        
         // Move up
         for(int i = 0; i < 3; i++) {
             keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 3, 32, 32));
         }
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(AnimalComponent.MOVE_UP, animation);
+        animationComponent.putAnimation(AnimalComponent.ANIM_MOVE_UP, animation);
         
         keyFrames.clear();
         
@@ -511,7 +537,7 @@ public class ActorBuilder {
             keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 0, 32, 32));
         }
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(AnimalComponent.MOVE_UP, animation);
+        animationComponent.putAnimation(AnimalComponent.ANIM_MOVE_DOWN, animation);
         
         keyFrames.clear();
         
@@ -520,7 +546,7 @@ public class ActorBuilder {
             keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 1, 32, 32));
         }
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(AnimalComponent.MOVE_UP, animation);
+        animationComponent.putAnimation(AnimalComponent.ANIM_MOVE_LEFT, animation);
         
         keyFrames.clear();
         
@@ -529,23 +555,14 @@ public class ActorBuilder {
             keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 2, 32, 32));
         }
         animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(AnimalComponent.MOVE_UP, animation);
-        
-        keyFrames.clear();
-        
-        // Move
-        for(int i = 0; i < 3; i++) {
-            keyFrames.add(new TextureRegion(animalTextureRegion, 32 * i, 32 * 0, 32, 32));
-        }
-        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
-        animationComponent.putAnimation(AnimalComponent.MOVE, animation);
+        animationComponent.putAnimation(AnimalComponent.ANIM_MOVE_RIGHT, animation);
         
         Entity entity = new Entity();
         entity.add(new AnimalComponent(farm, kind));
         entity.add(new RigidBodyComponent(body));
         entity.add(new TransformComponent());
         entity.add(new LifeComponent(5));
-        entity.add(new StateComponent(AnimalComponent.IDLE));
+        entity.add(new StateComponent(AnimalComponent.STATE_IDLE));
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
         entity.add(animationComponent);
         

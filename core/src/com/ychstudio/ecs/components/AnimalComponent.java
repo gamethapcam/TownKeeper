@@ -35,12 +35,17 @@ public class AnimalComponent implements Component {
         }
     }
     
-    public static final int IDLE = 0;
-    public static final int MOVE_UP = 1;
-    public static final int MOVE_DOWN = 2;
-    public static final int MOVE_LEFT = 3;
-    public static final int MOVE_RIGHT = 4;
-    public static final int MOVE = 5; 
+    public static final int STATE_IDLE = 0;
+    public static final int STATE_MOVE = 1; 
+    
+    public static final int ANIM_IDLE_UP = 0;
+    public static final int ANIM_IDLE_DOWN = 1;
+    public static final int ANIM_IDLE_LEFT = 2;
+    public static final int ANIM_IDLE_RIGHT = 3;
+    public static final int ANIM_MOVE_UP = 4;
+    public static final int ANIM_MOVE_DOWN = 5;
+    public static final int ANIM_MOVE_LEFT = 6;
+    public static final int ANIM_MOVE_RIGHT = 7;
 
     private Kind kind;
 

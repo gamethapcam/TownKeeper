@@ -10,10 +10,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ychstudio.ecs.components.AnimalComponent;
+import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
 import com.ychstudio.ecs.components.StateComponent;
-import com.ychstudio.ecs.components.VillagerComponent;
 import com.ychstudio.gamesys.GameManager;
 import com.ychstudio.utils.MyUtils;
 
@@ -23,6 +23,7 @@ public class AnimalSystem extends IteratingSystem {
     protected ComponentMapper<RigidBodyComponent> rigidBodyM = ComponentMapper.getFor(RigidBodyComponent.class);
     protected ComponentMapper<LifeComponent> lifeM = ComponentMapper.getFor(LifeComponent.class);
     protected ComponentMapper<StateComponent> stateM = ComponentMapper.getFor(StateComponent.class);
+    protected ComponentMapper<AnimationComponent> animationM = ComponentMapper.getFor(AnimationComponent.class);
     
     private Vector2 tmpV1 = new Vector2(); 
     private Vector2 tmpV2 = new Vector2();
@@ -30,7 +31,7 @@ public class AnimalSystem extends IteratingSystem {
     private boolean hitWall = false;
 
     public AnimalSystem() {
-        super(Family.all(AnimalComponent.class, RigidBodyComponent.class, LifeComponent.class, StateComponent.class)
+        super(Family.all(AnimalComponent.class, RigidBodyComponent.class, LifeComponent.class, AnimationComponent.class, StateComponent.class)
                 .get());
     }
 
@@ -40,6 +41,7 @@ public class AnimalSystem extends IteratingSystem {
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         LifeComponent life = lifeM.get(entity);
         StateComponent state = stateM.get(entity);
+        AnimationComponent animation = animationM.get(entity);
         
         Body body = rigidBody.body;
         
@@ -47,15 +49,15 @@ public class AnimalSystem extends IteratingSystem {
         if (animal.isRandomTimerUp()) {
             animal.resetRandomTimer();
             
-            state.setState(MyUtils.chooseRandom(AnimalComponent.IDLE, AnimalComponent.MOVE));
+            state.setState(MyUtils.chooseRandom(AnimalComponent.STATE_IDLE, AnimalComponent.STATE_MOVE));
             
-            if (state.getState() == AnimalComponent.MOVE) {
+            if (state.getState() == AnimalComponent.STATE_MOVE) {
                 animal.getNewDir();
             }
         }
         
         switch (state.getState()) {
-            case AnimalComponent.MOVE:
+            case AnimalComponent.STATE_MOVE:
                 tmpV1.set(animal.getCurrentDir());
                 body.applyLinearImpulse(tmpV1.scl(animal.speed), body.getWorldCenter(), true);
                 
@@ -69,11 +71,31 @@ public class AnimalSystem extends IteratingSystem {
                     animal.makeRandomTimerUp();
                 }
                 
+                if (Math.abs(body.getLinearVelocity().x) > Math.abs(body.getLinearVelocity().y)) {
+                    animation.setCurrentAnimation(body.getLinearVelocity().x > 0 ? AnimalComponent.ANIM_MOVE_RIGHT : AnimalComponent.ANIM_MOVE_LEFT);
+                } else {
+                    animation.setCurrentAnimation(body.getLinearVelocity().y > 0 ? AnimalComponent.ANIM_MOVE_UP : AnimalComponent.ANIM_MOVE_DOWN);
+                }
                 break;
-            case AnimalComponent.IDLE:
-            default:
-                state.setState(VillagerComponent.STATE_IDLE);
+            case AnimalComponent.STATE_IDLE:
                 body.setLinearVelocity(0, 0);
+                switch (animation.getCurrentAnimation()) {
+                    case AnimalComponent.ANIM_MOVE_DOWN:
+                        animation.setCurrentAnimation(AnimalComponent.ANIM_IDLE_DOWN);
+                        break;
+                    case AnimalComponent.ANIM_MOVE_UP:
+                        animation.setCurrentAnimation(AnimalComponent.ANIM_IDLE_UP);
+                        break;
+                    case AnimalComponent.ANIM_MOVE_LEFT:
+                        animation.setCurrentAnimation(AnimalComponent.ANIM_IDLE_LEFT);
+                        break;
+                    case AnimalComponent.ANIM_MOVE_RIGHT:
+                        animation.setCurrentAnimation(AnimalComponent.ANIM_IDLE_RIGHT);
+                        break;
+                    default:
+                        break;
+                }
+            default:
                 break;
         }
         
