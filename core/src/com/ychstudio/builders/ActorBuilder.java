@@ -256,7 +256,7 @@ public class ActorBuilder {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-        fixtureDef.filter.maskBits = GameManager.PLAYER_BIT | GameManager.ANIMAL_BIT;
+        fixtureDef.filter.maskBits = GameManager.PLAYER_BIT | GameManager.ANIMAL_BIT | GameManager.NPC_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -296,8 +296,9 @@ public class ActorBuilder {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
+        fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = GameManager.NPC_BIT;
-        fixtureDef.filter.maskBits = GameManager.WALL_BIT;
+        fixtureDef.filter.maskBits = GameManager.WALL_BIT | GameManager.NPC_ITEM_BIT;
 
         body.createFixture(fixtureDef);
         circleShape.dispose();
@@ -607,6 +608,7 @@ public class ActorBuilder {
         entity.add(new TransformComponent());
         entity.add(new RendererComponent(textureRegion, 0.75f, 0.75f));
         
+        body.setUserData(entity);
         engine.addEntity(entity);
     }
 

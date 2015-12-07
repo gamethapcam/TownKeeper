@@ -30,6 +30,7 @@ import com.ychstudio.ecs.systems.StateSystem;
 import com.ychstudio.ecs.systems.TentSystem;
 import com.ychstudio.ecs.systems.VillagerSystem;
 import com.ychstudio.gamesys.GameManager;
+import com.ychstudio.gamesys.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
@@ -65,6 +66,8 @@ public class PlayScreen implements Screen {
         viewport = new FitViewport(VIEW_WIDTH, VIEW_HEIGHT, camera);
 
         world = new World(new Vector2(), true);
+        world.setContactListener(new WorldContactListener());
+        
         engine = new Engine();
 
         engine.addSystem(new PlayerSystem());

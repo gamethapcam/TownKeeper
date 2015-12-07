@@ -65,6 +65,7 @@ public class VillagerSystem extends IteratingSystem {
             Job job = JobBulletin.getInstance().fetchJob();
             if (job != null) {
                 // head to the job location
+                villager.makeRandomTimerForever();
                 villager.targetPos.set(job.location);
                 setTargetPos(villager, body.getPosition());
                 state.setState(VillagerComponent.STATE_RECRUIT);

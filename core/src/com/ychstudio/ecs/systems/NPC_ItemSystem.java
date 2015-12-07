@@ -23,7 +23,6 @@ public class NPC_ItemSystem extends IteratingSystem {
         RigidBodyComponent rigidBody = rigidBodyM.get(entity);
         Body body = rigidBody.body;
         
-        System.out.println("npc item system working");
     }
 
 }
