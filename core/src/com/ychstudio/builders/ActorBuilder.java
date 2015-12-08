@@ -256,7 +256,7 @@ public class ActorBuilder {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.filter.categoryBits = GameManager.WALL_BIT;
-        fixtureDef.filter.maskBits = GameManager.PLAYER_BIT | GameManager.ANIMAL_BIT | GameManager.NPC_BIT;
+        fixtureDef.filter.maskBits = GameManager.PLAYER_BIT | GameManager.ANIMAL_BIT | GameManager.NPC_BIT | GameManager.NPC_ITEM_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -296,7 +296,7 @@ public class ActorBuilder {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.isSensor = true;
+        fixtureDef.isSensor = false;
         fixtureDef.filter.categoryBits = GameManager.NPC_BIT;
         fixtureDef.filter.maskBits = GameManager.WALL_BIT | GameManager.NPC_ITEM_BIT;
 
@@ -581,7 +581,7 @@ public class ActorBuilder {
      */
     public void createNPCItem(Vector2 spawnPosition, Job job) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.KinematicBody;
+        bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.set(spawnPosition);
         bodyDef.linearDamping = 6f;
         
@@ -592,8 +592,9 @@ public class ActorBuilder {
         
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
+//        fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = GameManager.NPC_ITEM_BIT;
-        fixtureDef.filter.maskBits = GameManager.NPC_BIT;
+        fixtureDef.filter.maskBits = GameManager.NPC_BIT | GameManager.WALL_BIT;
         
         body.createFixture(fixtureDef);
         
@@ -603,9 +604,10 @@ public class ActorBuilder {
         TextureRegion textureRegion = new TextureRegion(itemTextureRegiond, 24 * 2, 0, 24, 24);
         
         Entity entity = new Entity();
-        entity.add(new NPC_ItemComponent(job));
+        entity.add(new NPC_ItemComponent(spawnPosition, job));
         entity.add(new RigidBodyComponent(body));
         entity.add(new TransformComponent());
+        entity.add(new StateComponent(NPC_ItemComponent.STATE_CREATE));
         entity.add(new RendererComponent(textureRegion, 0.75f, 0.75f));
         
         body.setUserData(entity);

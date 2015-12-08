@@ -13,12 +13,12 @@ public class GameManager implements Disposable {
 
     public static final GameManager instance = new GameManager();
 
-    public static final short NOTHING_BIT = 0;
-    public static final short WALL_BIT = 1 << 0;
-    public static final short PLAYER_BIT = 1 << 1;
-    public static final short ANIMAL_BIT = 1 << 2;
-    public static final short NPC_BIT = 1 << 3;
-    public static final short NPC_ITEM_BIT = 1 << 4;
+    public static final short NOTHING_BIT   = 0;
+    public static final short WALL_BIT      = 1 << 0;
+    public static final short PLAYER_BIT    = 1 << 1;
+    public static final short ANIMAL_BIT    = 1 << 2;
+    public static final short NPC_BIT       = 1 << 3;
+    public static final short NPC_ITEM_BIT  = 1 << 4;
 
     public static final float PPM = 32f;
     public static AssetManager assetManager;

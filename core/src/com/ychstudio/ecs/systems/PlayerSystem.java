@@ -18,7 +18,6 @@ import com.ychstudio.ecs.components.TransformComponent;
 import com.ychstudio.gamesys.GameManager;
 import com.ychstudio.jobsys.Job;
 import com.ychstudio.jobsys.Job.Type;
-import com.ychstudio.jobsys.JobBulletin;
 
 public class PlayerSystem extends IteratingSystem {
 
@@ -71,10 +70,8 @@ public class PlayerSystem extends IteratingSystem {
                 // job function
                 if (player.gold > 0) {
                     player.gold--;
-                    JobBulletin jobBulletin = JobBulletin.getInstance();
                     // TODO create job should be done by the store
-                    Job job = new Job(Type.HUNTER, new Vector2(body.getPosition()));
-                    jobBulletin.addNewJob(job);
+                    Job job = new Job(Type.HUNTER, new Vector2(new Vector2(body.getPosition().x + 2, body.getPosition().y - 1)));
                     ActorBuilder actorBuilder = ActorBuilder.getInstance(body.getWorld(), getEngine());
                     actorBuilder.createNPCItem(body.getPosition(), job);
                 }

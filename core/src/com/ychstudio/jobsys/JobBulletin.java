@@ -23,7 +23,12 @@ public class JobBulletin {
         jobList.add(job);
     }
     
+    public boolean removeJob(Job job) {
+    	return jobList.remove(job);
+    }
+    
     public Job fetchJob() {
+    	System.out.println("job: " + jobList.size());
         if (jobList.isEmpty()) {
             return null;
         }
