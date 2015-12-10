@@ -30,6 +30,18 @@ public class HunterSystem extends IteratingSystem {
         
         Body body = rigidBody.body;
         
+        
+        switch(state.getState()) {
+            case HunterComponent.STATE_ATTACK:
+                break;
+            case HunterComponent.STATE_WALK:
+                break;
+            case HunterComponent.STATE_DIE:
+                break;
+            case HunterComponent.STATE_IDLE:
+            default:
+                break;
+        }
     }
 
 }

@@ -22,5 +22,8 @@ public class HunterComponent implements Component {
     public static final int ANIM_DIE_3 = 10;
     
     public static final float radius = 0.45f;
+    
+    public float speed = 1f;
+    public float maxSpeed = 2f;
 
 }
