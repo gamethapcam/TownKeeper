@@ -101,7 +101,8 @@ public class VillagerSystem extends IteratingSystem {
             case VillagerComponent.STATE_RECRUIT:
                 ActorBuilder actorBuilder = ActorBuilder.getInstance(body.getWorld(), getEngine());
                 actorBuilder.createHunter(body.getPosition().x, body.getPosition().y);
-                
+
+                villager.tent.minusOneVillager();
                 body.getWorld().destroyBody(body);
                 getEngine().removeEntity(entity);
                 break;

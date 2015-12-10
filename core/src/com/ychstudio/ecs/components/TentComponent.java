@@ -40,5 +40,16 @@ public class TentComponent implements Component {
     public void resetCountDown() {
         countDown = spawnTime;
     }
+    
+    public void minusOneVillager() {
+    	minusVillager(1);
+    }
+    
+    public void minusVillager(int number) {
+    	currentVillagers -= number;
+    	if (currentVillagers < 0) {
+			currentVillagers = 0;
+		}
+    }
 
 }
