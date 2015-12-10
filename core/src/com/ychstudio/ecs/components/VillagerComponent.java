@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.ychstudio.ai.Node;
+import com.ychstudio.jobsys.Job;
 
 public class VillagerComponent implements Component {
 
@@ -41,6 +42,8 @@ public class VillagerComponent implements Component {
 
     // current moving-toward position of A* path finding node
     public Node pathNode;
+    
+    public Job acquiredJob = null;
 
     public VillagerComponent(TentComponent tent) {
         this.tent = tent;

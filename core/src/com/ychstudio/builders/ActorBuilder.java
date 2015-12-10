@@ -21,6 +21,7 @@ import com.ychstudio.ecs.components.AnimalComponent;
 import com.ychstudio.ecs.components.AnimalComponent.Kind;
 import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.FarmComponent;
+import com.ychstudio.ecs.components.HunterComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.NPC_ItemComponent;
 import com.ychstudio.ecs.components.PlayerComponent;
@@ -569,6 +570,124 @@ public class ActorBuilder {
         entity.add(new RendererComponent(textureRegion, 1f, 1f));
         entity.add(animationComponent);
         
+        engine.addEntity(entity);
+        body.setUserData(entity);
+    }
+    
+    /**
+     * create a hunter
+     * 
+     * @param x
+     *            the x position of the hunter
+     * @param y
+     *            the y position of the hunter
+     */
+    public void createHunter(float x, float y) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DynamicBody;
+        bodyDef.position.set(x, y);
+        bodyDef.linearDamping = 6f;
+        
+        Body body = world.createBody(bodyDef);
+        
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(HunterComponent.radius);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circleShape;
+        fixtureDef.filter.categoryBits = GameManager.NPC_BIT;
+        fixtureDef.filter.maskBits = GameManager.WALL_BIT;
+        
+        body.createFixture(fixtureDef);
+        circleShape.dispose();
+        
+        TextureRegion hunterTextureRegion = assetManager.get("img/actors.pack", TextureAtlas.class).findRegion("Hunter");
+        TextureRegion textureRegion = new TextureRegion(hunterTextureRegion, 32 * 1, 32 * 0, 32, 32);
+        
+        AnimationComponent animationComponent = new AnimationComponent();
+        Animation animation = null;
+        
+        Array<TextureRegion> keyFrames = new Array<>();
+        
+        // Idle down
+        keyFrames.add(textureRegion);
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(HunterComponent.ANIM_IDLE_DOWN, animation);
+        
+        keyFrames.clear();
+        
+        // Idle left
+        keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * 1, 32 * 1, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(HunterComponent.ANIM_IDLE_LEFT, animation);
+        
+        keyFrames.clear();
+        
+        // Idle right
+        keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * 1, 32 * 2, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(HunterComponent.ANIM_IDLE_RIGHT, animation);
+        
+        keyFrames.clear();
+        
+        // Idle up
+        keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * 1, 32 * 3, 32, 32));
+        animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+        animationComponent.putAnimation(HunterComponent.ANIM_IDLE_UP, animation);
+        
+        keyFrames.clear();
+        
+        // Walk down
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * i, 32 * 0, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(HunterComponent.ANIM_WALK_DOWN, animation);
+        
+        keyFrames.clear();
+        
+        // Walk left
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * i, 32 * 1, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(HunterComponent.ANIM_WALK_LEFT, animation);
+        
+        keyFrames.clear();
+        
+        // Walk right
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * i, 32 * 2, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(HunterComponent.ANIM_WALK_RIGHT, animation);
+        
+        keyFrames.clear();
+        
+        // Walk up
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * i, 32 * 3, 32, 32));
+        }
+        animation = new Animation(0.1f, keyFrames, PlayMode.LOOP_PINGPONG);
+        animationComponent.putAnimation(HunterComponent.ANIM_WALK_UP, animation);
+        
+        keyFrames.clear();
+        
+        // Die
+        for (int i = 0; i < 3; i++) {
+            keyFrames.add(new TextureRegion(hunterTextureRegion, 32 * i, 32 * 4, 32, 32));
+            animation = new Animation(0.1f, keyFrames, PlayMode.NORMAL);
+            animationComponent.putAnimation(HunterComponent.ANIM_DIE_1 + i, animation);
+            keyFrames.clear();
+        }
+        
+        Entity entity = new Entity();
+        entity.add(new HunterComponent());
+        entity.add(new RigidBodyComponent(body));
+        entity.add(new TransformComponent());
+        entity.add(new StateComponent(HunterComponent.STATE_IDLE));
+        entity.add(new RendererComponent(textureRegion, 1f, 1f));
+        entity.add(animationComponent);
+     
         engine.addEntity(entity);
         body.setUserData(entity);
     }

@@ -21,6 +21,7 @@ import com.ychstudio.builders.WorldBuilder;
 import com.ychstudio.ecs.systems.AnimalSystem;
 import com.ychstudio.ecs.systems.AnimationSystem;
 import com.ychstudio.ecs.systems.FarmSystem;
+import com.ychstudio.ecs.systems.HunterSystem;
 import com.ychstudio.ecs.systems.LifeSystem;
 import com.ychstudio.ecs.systems.NPC_ItemSystem;
 import com.ychstudio.ecs.systems.PhysicsSystem;
@@ -72,6 +73,7 @@ public class PlayScreen implements Screen {
 
         engine.addSystem(new PlayerSystem());
         engine.addSystem(new VillagerSystem());
+        engine.addSystem(new HunterSystem());
         engine.addSystem(new AnimalSystem());
         engine.addSystem(new FarmSystem(world));
         engine.addSystem(new LifeSystem());

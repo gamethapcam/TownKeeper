@@ -28,7 +28,6 @@ public class JobBulletin {
     }
     
     public Job fetchJob() {
-    	System.out.println("job: " + jobList.size());
         if (jobList.isEmpty()) {
             return null;
         }

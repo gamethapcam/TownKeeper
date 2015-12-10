@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ychstudio.ai.AStarPathFinding;
+import com.ychstudio.builders.ActorBuilder;
 import com.ychstudio.ecs.components.AnimationComponent;
 import com.ychstudio.ecs.components.LifeComponent;
 import com.ychstudio.ecs.components.RigidBodyComponent;
@@ -68,8 +69,13 @@ public class VillagerSystem extends IteratingSystem {
                 villager.makeRandomTimerForever();
                 villager.targetPos.set(job.location);
                 setTargetPos(villager, body.getPosition());
-                state.setState(VillagerComponent.STATE_RECRUIT);
+                state.setState(VillagerComponent.STATE_WANDER);
             }
+        }
+        
+        if (villager.acquiredJob != null) {
+            villager.jobLookingTimer = Float.MAX_VALUE;
+            state.setState(VillagerComponent.STATE_RECRUIT);
         }
 
         switch (state.getState()) {
@@ -93,6 +99,12 @@ public class VillagerSystem extends IteratingSystem {
                 }
                 break;
             case VillagerComponent.STATE_RECRUIT:
+                ActorBuilder actorBuilder = ActorBuilder.getInstance(body.getWorld(), getEngine());
+                actorBuilder.createHunter(body.getPosition().x, body.getPosition().y);
+                
+                body.getWorld().destroyBody(body);
+                getEngine().removeEntity(entity);
+                break;
             case VillagerComponent.STATE_WANDER:
 
                 if (villager.pathNode == null) {

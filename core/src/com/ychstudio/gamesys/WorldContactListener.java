@@ -28,7 +28,8 @@ public class WorldContactListener implements ContactListener {
                         // villager gets the item
                         npc_Item.taken();
                         
-                        // TODO remove item and villager change career
+                        // villager gets the job
+                        villager.acquiredJob = npc_Item.job;
                     }
                 }
             }
@@ -43,7 +44,8 @@ public class WorldContactListener implements ContactListener {
                         // villager gets the item
                         npc_Item.taken();
                         
-                        // TODO remove item and villager change career
+                        // villager gets the job
+                        villager.acquiredJob = npc_Item.job;
                     }
                 }
             }
